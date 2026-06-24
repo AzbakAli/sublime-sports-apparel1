@@ -1,6 +1,5 @@
 "use client";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 export default function CTA() {
@@ -15,12 +14,13 @@ export default function CTA() {
           className="relative rounded-[2rem] overflow-hidden p-12 md:p-24 text-center shadow-luxury"
         >
           <div className="absolute inset-0 bg-primary z-0">
-            <Image
-              src="/images/hero-kits.jpg"
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/hero-banner.png"
               alt=""
-              fill
-              className="object-cover object-center opacity-20"
-              sizes="(max-width: 1280px) 100vw, 1280px"
+              className="absolute inset-0 w-full h-full object-cover object-center opacity-25"
+              loading="lazy"
+              decoding="async"
               aria-hidden
             />
             <div className="absolute inset-0 hero-overlay opacity-90" />

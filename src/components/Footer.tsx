@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Instagram, MessageCircle } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -14,12 +14,17 @@ export default function Footer() {
               <span className="text-[10px] tracking-[0.3em] text-accent">SPORTS APPAREL</span>
             </div>
           </div>
-          <p className="text-white/40 text-sm leading-relaxed">
-            Premium sublimation printing & custom sportswear manufacturing. Building athletic identities worldwide.
+          <p className="text-white/50 text-sm leading-relaxed">
+            Premium sublimation printing, custom sportswear, and custom patches.
+            Manufacturing excellence from Pakistan to the world.
           </p>
           <div className="flex gap-4 mt-8">
-            {[Facebook, Instagram, Twitter, Linkedin].map((Icon, i) => (
-              <a key={i} href="#" className="w-12 h-12 rounded-full bg-white/5 hover:bg-accent hover:text-primary flex items-center justify-center transition-colors duration-300">
+            {[Facebook, Instagram, MessageCircle].map((Icon, i) => (
+              <a
+                key={i}
+                href="#"
+                className="w-12 h-12 rounded-full bg-white/5 hover:bg-accent hover:text-primary flex items-center justify-center transition-colors duration-300"
+              >
                 <Icon className="w-5 h-5" />
               </a>
             ))}
@@ -42,7 +47,7 @@ export default function Footer() {
           <ul className="space-y-4 text-white/50 text-sm">
             <li>Sublimation Printing</li>
             <li>Custom Sportswear</li>
-            <li>Embroidery & Digitizing</li>
+            <li>Embroidery &amp; Digitizing</li>
             <li>Screen Printing</li>
             <li>Custom Patches</li>
           </ul>
@@ -53,22 +58,36 @@ export default function Footer() {
           <ul className="space-y-6 text-white/50 text-sm">
             <li className="flex items-start gap-4">
               <Mail className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
-              <span>sales@sublimesports.com</span>
+              <a href="mailto:info@sublimesports.com" className="hover:text-accent transition-colors">
+                info@sublimesports.com
+              </a>
             </li>
             <li className="flex items-start gap-4">
               <Phone className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
-              <span>+1 (800) 123-4567</span>
+              <a href="tel:+923001234567" className="hover:text-accent transition-colors">
+                +92 300 123 4567
+              </a>
+            </li>
+            <li className="flex items-start gap-4">
+              <MessageCircle className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
+              <span>WhatsApp: +92 300 123 4567</span>
             </li>
             <li className="flex items-start gap-4">
               <MapPin className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
-              <span>123 Industry Blvd, Manufacturing District, CA 90210</span>
+              <span>
+                Industrial Area, Sialkot,
+                <br />
+                Punjab, Pakistan
+              </span>
             </li>
           </ul>
         </div>
       </div>
 
       <div className="border-t border-white/5 mt-20 pt-8 max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p className="text-white/30 text-xs">© {new Date().getFullYear()} Sublime Sports Apparel. All rights reserved.</p>
+        <p className="text-white/30 text-xs">
+          © {new Date().getFullYear()} Sublime Sports Apparel. All rights reserved. · Sialkot, Pakistan
+        </p>
         <div className="flex gap-8 text-white/30 text-xs">
           <a href="#" className="hover:text-accent transition-colors">Privacy Policy</a>
           <a href="#" className="hover:text-accent transition-colors">Terms of Service</a>

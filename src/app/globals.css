@@ -101,10 +101,26 @@ body {
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* Keeps hero background pixel-sharp — no GPU blur transforms */
+.hero-bg img {
+  image-rendering: auto;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
 .hero-overlay {
   background:
-    linear-gradient(105deg, rgba(10, 10, 10, 0.92) 0%, rgba(10, 10, 10, 0.78) 45%, rgba(10, 10, 10, 0.35) 70%, rgba(10, 10, 10, 0.15) 100%),
-    linear-gradient(to top, rgba(10, 10, 10, 0.6) 0%, transparent 40%);
+    linear-gradient(
+      90deg,
+      rgba(10, 10, 10, 0.82) 0%,
+      rgba(10, 10, 10, 0.62) 38%,
+      rgba(10, 10, 10, 0.28) 58%,
+      rgba(10, 10, 10, 0.08) 78%,
+      transparent 100%
+    ),
+    linear-gradient(to top, rgba(10, 10, 10, 0.45) 0%, transparent 35%);
+  pointer-events: none;
 }
 
 .btn-shimmer {
