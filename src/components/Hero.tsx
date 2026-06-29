@@ -33,7 +33,7 @@ export default function Hero() {
       <div className="absolute inset-0 z-0 hero-bg">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/images/hero-banner.png"
+          src="/images/hero-banner2.png"
           alt="Sublime Sports Apparel — custom uniforms for football, basketball, baseball, soccer and athletics"
           className="absolute inset-0 w-full h-full object-cover object-[center_22%] lg:object-[center_20%]"
           fetchPriority="high"
