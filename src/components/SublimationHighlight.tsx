@@ -46,9 +46,9 @@ export default function SublimationHighlight() {
         </div>
 
         <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="relative h-[700px] hidden lg:block">
-          {/* Using Image 1 (6 custom football kits) for Sublimation showcase */}
-          <div className="absolute inset-0 rounded-[2rem] overflow-hidden shadow-luxury border border-white/10">
-            <img src="https://z-cdn-media.chatglm.cn/files/050c079e-a68c-4265-a02f-5a4f3374fb6b.png?auth_key=1882131241-d65e28d1e4ee47478018e11c797bd93d-0-63de88d729332b2d8de22b383c3523e2" alt="Sublimated Football Uniforms" className="w-full h-full object-cover" />
+          {/* Using newaboutus image for Sublimation showcase */}
+          <div className="absolute inset-0 rounded-[2rem] overflow-hidden shadow-luxury border border-white/10 bg-primary">
+            <img src="/images/newaboutus.jpeg" alt="Sublimated Football Uniforms" className="w-full h-full object-contain" />
           </div>
           <div className="absolute -bottom-6 -left-6 w-48 h-48 rounded-2xl glass flex flex-col items-center justify-center text-center p-4 animate-float">
             <div className="text-4xl font-heading font-extrabold text-accent">100%</div>

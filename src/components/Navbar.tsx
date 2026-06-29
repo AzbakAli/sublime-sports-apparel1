@@ -61,12 +61,12 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         <a href="/" className="flex items-center gap-3 text-white">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-yellow-700 flex items-center justify-center shadow-gold-glow">
-            <span className="text-primary font-bold text-lg">S</span>
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent to-yellow-700 flex items-center justify-center shadow-gold-glow">
+            <span className="text-primary font-bold text-2xl">S</span>
           </div>
           <div className="flex flex-col leading-none">
-            <span className="font-heading font-bold text-xl tracking-wide">SUBLIME</span>
-            <span className="text-[10px] tracking-[0.3em] text-accent">SPORTS APPAREL</span>
+            <span className="font-heading font-bold text-2xl tracking-wide">SUBLIME</span>
+            <span className="text-[11px] tracking-[0.3em] text-accent font-bold">SPORTS APPAREL</span>
           </div>
         </a>
 

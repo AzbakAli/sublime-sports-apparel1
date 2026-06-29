@@ -113,13 +113,13 @@ body {
   background:
     linear-gradient(
       90deg,
-      rgba(10, 10, 10, 0.82) 0%,
-      rgba(10, 10, 10, 0.62) 38%,
-      rgba(10, 10, 10, 0.28) 58%,
-      rgba(10, 10, 10, 0.08) 78%,
+      rgba(10, 10, 10, 0.65) 0%,
+      rgba(10, 10, 10, 0.45) 38%,
+      rgba(10, 10, 10, 0.25) 58%,
+      rgba(10, 10, 10, 0.1) 78%,
       transparent 100%
     ),
-    linear-gradient(to top, rgba(10, 10, 10, 0.45) 0%, transparent 35%);
+    linear-gradient(to top, rgba(10, 10, 10, 0.35) 0%, transparent 35%);
   pointer-events: none;
 }
 

@@ -51,26 +51,15 @@ export default function Hero() {
           >
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
             <span className="text-accent text-xs font-semibold tracking-[0.2em] uppercase">
-              Premium Sublimation & Sportswear
+              Premium Sublimation Sportswear
             </span>
           </motion.div>
 
-          <motion.h1
-            variants={itemVariants}
-            className="font-heading text-5xl sm:text-6xl md:text-7xl font-extrabold text-white leading-[1.05] tracking-tight text-shadow-hero"
-          >
-            Elevate Your{" "}
-            <br />
-            <span className="text-gradient-gold">Athletic</span> Identity
-          </motion.h1>
-
           <motion.p
             variants={itemVariants}
-            className="mt-8 text-lg md:text-xl text-white/90 max-w-xl leading-relaxed text-shadow-hero"
+            className="mt-8 text-lg md:text-xl text-white/90 max-w-xl leading-relaxed text-shadow-hero font-medium font-heading"
           >
-            High-quality custom sublimated sports apparel and patches for teams,
-            businesses, and organizations worldwide. Vibrant designs that won&apos;t
-            crack, peel, or fade.
+            Premium quality sublimated uniforms, custom patches, and sportswear designed to make your team stand out.
           </motion.p>
 
           <motion.div variants={itemVariants} className="mt-12 flex flex-wrap gap-4">

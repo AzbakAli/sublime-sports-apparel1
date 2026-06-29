@@ -55,7 +55,7 @@ export default function About() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-            className="relative min-h-[340px] sm:min-h-[420px] lg:min-h-[560px] rounded-2xl overflow-hidden shadow-luxury border border-black/10 bg-primary"
+            className="relative min-h-[300px] sm:min-h-[380px] lg:min-h-[450px] rounded-2xl overflow-hidden shadow-luxury border border-black/10 bg-primary"
           >
             {/* Native img for full resolution — no compression */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
