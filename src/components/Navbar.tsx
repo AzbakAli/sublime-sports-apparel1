@@ -55,20 +55,20 @@ export default function Navbar() {
       transition={{ duration: 0.5 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "py-4 bg-primary/95 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-black/20"
-          : "py-8 bg-gradient-to-b from-primary/60 to-transparent backdrop-blur-[2px]"
+          ? "py-2 bg-primary/95 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-black/20"
+          : "py-4 bg-gradient-to-b from-primary/60 to-transparent backdrop-blur-[2px]"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-3 text-white">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent to-yellow-700 flex items-center justify-center shadow-gold-glow">
-            <span className="text-primary font-bold text-2xl">S</span>
-          </div>
-          <div className="flex flex-col leading-none">
-            <span className="font-heading font-bold text-2xl tracking-wide">SUBLIME</span>
-            <span className="text-[11px] tracking-[0.3em] text-accent font-bold">SPORTS APPAREL</span>
-          </div>
-        </a>
+        <div className="flex items-center">
+          <img
+            src="/images/newlogo3.png"
+            alt="Sublime Sports Apparel"
+            className="h-40 w-auto cursor-pointer"
+            onClick={() => window.location.href = "/"}
+            style={{ display: 'block', margin: '-32px 0' }}
+          />
+        </div>
 
         <div className="hidden md:flex items-center gap-10">
           {navLinks.map((link) => {

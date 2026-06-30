@@ -6,13 +6,11 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-4 md:grid-cols-2 gap-16">
         <div>
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-yellow-700 flex items-center justify-center">
-              <span className="text-primary font-bold text-lg">S</span>
-            </div>
-            <div className="flex flex-col leading-none">
-              <span className="font-heading font-bold text-xl tracking-wide">SUBLIME</span>
-              <span className="text-[10px] tracking-[0.3em] text-accent">SPORTS APPAREL</span>
-            </div>
+            <img
+              src="/images/newlogo3.png"
+              alt="Sublime Sports Apparel"
+              className="h-40 w-auto"
+            />
           </div>
           <p className="text-white/50 text-sm leading-relaxed">
             Premium sublimation printing, custom sportswear, and custom patches.

@@ -8,10 +8,13 @@ const sora = Sora({ subsets: ["latin"], variable: "--font-sora", weight: ['400',
 export const metadata: Metadata = {
   title: "Sublime Sports Apparel | Premium Sublimation & Custom Uniforms",
   description: "Premium sportswear manufacturer specializing in custom sublimation printing, team uniforms, and embroidered patches for brands, clubs, and businesses worldwide.",
+  icons: {
+    icon: "/favicon.png",
+  },
   openGraph: {
     title: "Sublime Sports Apparel | Premium Sportswear Manufacturing",
     description: "High-quality custom sportswear, sublimation printing, uniforms, and embroidered patches. Request a free quote today.",
-    images: ["https://z-cdn-media.chatglm.cn/files/050c079e-a68c-4265-a02f-5a4f3374fb6b.png"],
+    images: ["/images/newlogo2.png"],
     type: "website",
   },
   keywords: ["sublimation printing", "custom sportswear", "team uniforms", "football jerseys", "basketball uniforms", "embroidery digitizing"],
