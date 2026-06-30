@@ -45,7 +45,7 @@ export default function SublimationHighlight() {
           </a>
         </div>
 
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="relative h-[700px] hidden lg:block">
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="relative h-[550px] hidden lg:block">
           {/* Using newaboutus image for Sublimation showcase */}
           <div className="absolute inset-0 rounded-[2rem] overflow-hidden shadow-luxury border border-white/10 bg-primary">
             <img src="/images/newaboutus.jpeg" alt="Sublimated Football Uniforms" className="w-full h-full object-contain" />
