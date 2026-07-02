@@ -30,7 +30,7 @@ export default function Products() {
             <a key={prod.title} href={prod.href} className="block">
               <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.05 }} className="group relative bg-white rounded-3xl overflow-hidden shadow-luxury cursor-pointer border border-black/5 hover:shadow-2xl hover:shadow-accent/10 transition-all duration-500">
                 <div className="relative h-80 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
-                  <img src={prod.img} alt={prod.title} className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110 p-12" />
+                  <img src={prod.img} alt={prod.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   <div className="absolute top-4 right-4 bg-accent text-primary px-4 py-2 rounded-full text-xs font-bold shadow-gold-glow flex items-center gap-2">
                     <Sparkles className="w-3 h-3" />
                     {prod.count}
