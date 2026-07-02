@@ -19,9 +19,9 @@ export default function Home() {
       <Navbar />
       <Hero />
       <Trusted />
-      <About />
-      <SublimationHighlight />
       <Products />
+      <SublimationHighlight />
+      <About />
       <Manufacturing />
       <WhyChooseUs />
       <Services />

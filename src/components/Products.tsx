@@ -1,14 +1,14 @@
 "use client";
 import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 
 const products = [
-  { title: "Custom Football Kits", desc: "Vibrant sublimated jerseys & shorts.", img: "/images/newproducts1.jpeg" },
-  { title: "Full Soccer Uniforms", desc: "Jerseys, shorts, socks & equipment.", img: "/images/newproducts2.jpeg" },
-  { title: "Team Soccer Jerseys", desc: "Multi-color kits for any club.", img: "/images/newproducts3.jpeg" },
-  { title: "Baseball Jerseys", desc: "Tie-dye and classic button-ups.", img: "https://z-cdn-media.chatglm.cn/files/8392e93c-eacb-4752-817c-06b157b0e280.png?auth_key=1882131241-5e0d3ef9cd124b70b17fde42ea3c4ec2-0-31574fe1e7dd5394463ac303f690dca3" },
-  { title: "Basketball Uniforms", desc: "Breathable tanks & shorts sets.", img: "https://z-cdn-media.chatglm.cn/files/cd4ae295-2092-474d-861a-547348dd2593.png?auth_key=1882131241-2ea63861f75349cb9f3a30ac18317d00-0-02687150ecc2fa95da606f776894cb46" },
-  { title: "Dream Basketball Kits", desc: "Premium sets with shoes & socks.", img: "https://z-cdn-media.chatglm.cn/files/39fe9ff4-bfce-4fb6-9194-ab2be6e6ccef.png?auth_key=1882131241-9f66ae3c538849ee8f8fca03c0cdda12-0-7244f30a943b275ba17340cbdd3b0586" },
+  { title: "Baseball", desc: "Premium baseball uniforms and jerseys.", img: "/images/baseballcover.jpeg", count: "55 Designs", href: "/products/baseball" },
+  { title: "Basketball", desc: "High-performance basketball kits.", img: "/images/basketballcover.jpeg", count: "50 Designs", href: "/products/basketball" },
+  { title: "Soccer", desc: "Professional soccer uniforms.", img: "/images/soccercover.jpeg", count: "50 Designs", href: "/products/soccer" },
+  { title: "Football", desc: "Custom football jerseys and gear.", img: "/images/footballcover.jpeg", count: "50 Designs", href: "/products/football" },
+  { title: "Baseball Jerseys", desc: "Tie-dye and classic button-ups.", img: "https://z-cdn-media.chatglm.cn/files/8392e93c-eacb-4752-817c-06b157b0e280.png?auth_key=1882131241-5e0d3ef9cd124b70b17fde42ea3c4ec2-0-31574fe1e7dd5394463ac303f690dca3", count: "Custom", href: "/#contact" },
+  { title: "Basketball Uniforms", desc: "Breathable tanks & shorts sets.", img: "https://z-cdn-media.chatglm.cn/files/cd4ae295-2092-474d-861a-547348dd2593.png?auth_key=1882131241-2ea63861f75349cb9f3a30ac18317d00-0-02687150ecc2fa95da606f776894cb46", count: "Custom", href: "/#contact" },
 ];
 
 export default function Products() {
@@ -27,21 +27,27 @@ export default function Products() {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((prod, i) => (
-            <motion.div key={prod.title} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.05 }} className="group relative bg-white rounded-2xl overflow-hidden shadow-luxury cursor-pointer border border-black/5">
-              <div className="relative h-80 overflow-hidden">
-                <img src={prod.img} alt={prod.title} className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </div>
-              <div className="p-8 flex justify-between items-center">
-                <div>
-                  <h3 className="font-heading text-2xl font-bold mb-2">{prod.title}</h3>
-                  <p className="text-base text-primary/50">{prod.desc}</p>
+            <a key={prod.title} href={prod.href} className="block">
+              <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.05 }} className="group relative bg-white rounded-3xl overflow-hidden shadow-luxury cursor-pointer border border-black/5 hover:shadow-2xl hover:shadow-accent/10 transition-all duration-500">
+                <div className="relative h-80 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                  <img src={prod.img} alt={prod.title} className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110 p-12" />
+                  <div className="absolute top-4 right-4 bg-accent text-primary px-4 py-2 rounded-full text-xs font-bold shadow-gold-glow flex items-center gap-2">
+                    <Sparkles className="w-3 h-3" />
+                    {prod.count}
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
-                <div className="w-12 h-12 rounded-full bg-light-gray flex items-center justify-center group-hover:bg-accent transition-all duration-300 flex-shrink-0">
-                  <ArrowUpRight className="w-6 h-6 text-primary group-hover:text-primary" />
+                <div className="p-8 relative">
+                  <div className="absolute -top-6 left-8 w-14 h-14 rounded-2xl bg-gradient-to-br from-accent to-yellow-600 flex items-center justify-center shadow-lg shadow-accent/30 group-hover:scale-110 transition-transform duration-300">
+                    <ArrowUpRight className="w-7 h-7 text-primary" />
+                  </div>
+                  <div className="pt-4">
+                    <h3 className="font-heading text-2xl font-bold mb-3 text-primary group-hover:text-accent transition-colors">{prod.title}</h3>
+                    <p className="text-base text-primary/60 leading-relaxed">{prod.desc}</p>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </a>
           ))}
         </div>
       </div>

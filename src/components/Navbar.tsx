@@ -5,10 +5,10 @@ import { Menu, X, ArrowRight, ChevronDown } from "lucide-react";
 
 const navLinks = [
   { name: "Home", href: "/" },
-  { name: "About", href: "/#about" },
   { name: "Products", href: "/#products" },
-  { name: "Patches", href: "/patches" },
   { name: "Sublimation", href: "/#sublimation" },
+  { name: "About", href: "/#about" },
+  { name: "Patches", href: "/patches" },
   { name: "Contact", href: "/#contact" },
 ];
 
@@ -21,13 +21,21 @@ const patchTypes = [
   { name: "Chenille Patches", href: "/patches/chenille" },
 ];
 
+const productTypes = [
+  { name: "Baseball", href: "/products/baseball" },
+  { name: "Basketball", href: "/products/basketball" },
+  { name: "Soccer", href: "/products/soccer" },
+  { name: "Football", href: "/products/football" },
+];
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [patchesOpen, setPatchesOpen] = useState(false);
+  const [productsOpen, setProductsOpen] = useState(false);
   const [dropdownTimeout, setDropdownTimeout] = useState<NodeJS.Timeout | null>(null);
 
-  const handleMouseEnter = () => {
+  const handlePatchesMouseEnter = () => {
     if (dropdownTimeout) {
       clearTimeout(dropdownTimeout);
       setDropdownTimeout(null);
@@ -35,9 +43,24 @@ export default function Navbar() {
     setPatchesOpen(true);
   };
 
-  const handleMouseLeave = () => {
+  const handlePatchesMouseLeave = () => {
     const timeout = setTimeout(() => {
       setPatchesOpen(false);
+    }, 150);
+    setDropdownTimeout(timeout);
+  };
+
+  const handleProductsMouseEnter = () => {
+    if (dropdownTimeout) {
+      clearTimeout(dropdownTimeout);
+      setDropdownTimeout(null);
+    }
+    setProductsOpen(true);
+  };
+
+  const handleProductsMouseLeave = () => {
+    const timeout = setTimeout(() => {
+      setProductsOpen(false);
     }, 150);
     setDropdownTimeout(timeout);
   };
@@ -74,11 +97,11 @@ export default function Navbar() {
           {navLinks.map((link) => {
             if (link.name === "Patches") {
               return (
-                <div 
+                <div
                   key={link.name}
                   className="relative"
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
+                  onMouseEnter={handlePatchesMouseEnter}
+                  onMouseLeave={handlePatchesMouseLeave}
                 >
                   <button className="text-sm text-white/85 hover:text-accent transition-colors duration-300 font-medium flex items-center gap-1">
                     {link.name}
@@ -99,6 +122,41 @@ export default function Navbar() {
                             className="block px-4 py-3 text-white/80 hover:text-accent hover:bg-white/5 transition-colors text-sm"
                           >
                             {patch.name}
+                          </a>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            }
+            if (link.name === "Products") {
+              return (
+                <div
+                  key={link.name}
+                  className="relative"
+                  onMouseEnter={handleProductsMouseEnter}
+                  onMouseLeave={handleProductsMouseLeave}
+                >
+                  <button className="text-sm text-white/85 hover:text-accent transition-colors duration-300 font-medium flex items-center gap-1">
+                    {link.name}
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                  <AnimatePresence>
+                    {productsOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="absolute top-full left-0 mt-2 w-64 bg-primary/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-xl overflow-hidden"
+                      >
+                        {productTypes.map((product) => (
+                          <a
+                            key={product.name}
+                            href={product.href}
+                            className="block px-4 py-3 text-white/80 hover:text-accent hover:bg-white/5 transition-colors text-sm"
+                          >
+                            {product.name}
                           </a>
                         ))}
                       </motion.div>
@@ -137,6 +195,14 @@ export default function Navbar() {
                   {link.name}
                 </a>
               ))}
+              <div className="flex flex-col gap-3">
+                <span className="text-accent text-sm font-semibold tracking-wider uppercase">Products</span>
+                {productTypes.map((product) => (
+                  <a key={product.name} href={product.href} className="text-white/80 text-lg pl-4" onClick={() => setMobileOpen(false)}>
+                    {product.name}
+                  </a>
+                ))}
+              </div>
               <div className="flex flex-col gap-3">
                 <span className="text-accent text-sm font-semibold tracking-wider uppercase">Patches</span>
                 {patchTypes.map((patch) => (
