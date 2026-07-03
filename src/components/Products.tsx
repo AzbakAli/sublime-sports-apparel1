@@ -21,7 +21,7 @@ export default function Products() {
             <motion.span initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-sm font-semibold text-accent uppercase tracking-[0.2em]">Our Products</motion.span>
             <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="font-heading text-4xl md:text-6xl font-extrabold mt-4">Premium Gear for Every Sport</motion.h2>
           </div>
-          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-primary/50 text-lg max-w-md mt-4 md:mt-0">
+          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-primary/50 text-lg max-w-md mt-4 md:mt-0 font-playfair italic">
             From football to basketball, we manufacture high-performance apparel tailored to your team's exact needs.
           </motion.p>
         </div>

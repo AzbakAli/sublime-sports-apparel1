@@ -14,7 +14,7 @@ export default function SublimationHighlight() {
     <section id="sublimation" className="py-32 bg-primary text-white relative overflow-hidden">
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 rounded-full blur-3xl"></div>
       
-      <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center">
+      <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
         <div>
           <motion.span initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-sm font-semibold text-accent uppercase tracking-[0.2em]">Our Speciality</motion.span>
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="font-heading text-4xl md:text-6xl font-extrabold mt-4 leading-tight">
@@ -45,14 +45,63 @@ export default function SublimationHighlight() {
           </a>
         </div>
 
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="relative h-[550px] hidden lg:block">
-          {/* Using newaboutus image for Sublimation showcase */}
-          <div className="absolute inset-0 rounded-[2rem] overflow-hidden shadow-luxury border border-white/10 bg-primary">
-            <img src="/images/newaboutus.jpeg" alt="Sublimated Football Uniforms" className="w-full h-full object-contain" />
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="relative h-[750px] hidden lg:block">
+          <div className="absolute inset-0 grid grid-rows-2 gap-6">
+            {/* Top - Printing machine image */}
+            <div className="rounded-[2rem] overflow-hidden shadow-luxury border border-white/10 bg-primary relative">
+              <img src="/images/sublimationprinting.jpeg" alt="Sublimation Printing Machine" className="w-full h-full object-cover" />
+              <div className="absolute top-4 left-4 w-56 rounded-2xl glass p-4 z-10">
+                <p className="text-xs text-white/80 leading-relaxed">
+                  <span className="text-accent font-bold">How it works:</span> Heat transfers dye directly into fabric fibers, creating permanent, vibrant designs that never crack or fade.
+                </p>
+              </div>
+            </div>
+            
+            {/* Bottom - Floating shirts box */}
+            <div className="rounded-[2rem] overflow-hidden shadow-luxury border border-white/10 bg-primary relative">
+              <motion.div 
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0] }}
+                className="absolute top-16 left-8 w-48 h-48 rounded-2xl overflow-hidden shadow-luxury border border-white/20 bg-primary animate-float cursor-pointer"
+              >
+                <img src="/images/moving1.webp" alt="Sublimated Shirt 1" className="w-full h-full object-contain p-3" />
+              </motion.div>
+              
+              <motion.div 
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0] }}
+                className="absolute top-20 left-1/2 -translate-x-1/2 w-56 h-56 rounded-2xl overflow-hidden shadow-luxury border border-white/20 bg-primary animate-float cursor-pointer"
+                style={{ animationDelay: '1s' }}
+              >
+                <img src="/images/moving2.webp" alt="Sublimated Shirt 2" className="w-full h-full object-contain p-3" />
+              </motion.div>
+              
+              <motion.div 
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0] }}
+                className="absolute top-16 right-8 w-48 h-48 rounded-2xl overflow-hidden shadow-luxury border border-white/20 bg-primary animate-float cursor-pointer"
+                style={{ animationDelay: '2s' }}
+              >
+                <img src="/images/moving3.webp" alt="Sublimated Shirt 3" className="w-full h-full object-contain p-3" />
+              </motion.div>
+            </div>
           </div>
-          <div className="absolute -bottom-6 -left-6 w-48 h-48 rounded-2xl glass flex flex-col items-center justify-center text-center p-4 animate-float">
-            <div className="text-4xl font-heading font-extrabold text-accent">100%</div>
-            <div className="text-xs text-white/70 mt-1 uppercase tracking-widest">Color Fastness</div>
+
+          {/* Text card - outside the grid, below everything */}
+          <div className="absolute -bottom-40 left-0 right-0 w-full rounded-2xl glass p-4 z-10">
+            <p className="text-xs text-white/80 leading-relaxed text-center max-w-4xl mx-auto">
+              <span className="text-accent font-bold">Purchase Straight from the Manufacturer</span><br /><br />
+              Don't overpay—go right to the source! We're the manufacturer, delivering high-end, custom sportswear at incredible value. Skip the middlemen and hidden fees for pro-grade gear designed your way. Hurry, our special offer is available for a limited time only!
+            </p>
           </div>
         </motion.div>
       </div>

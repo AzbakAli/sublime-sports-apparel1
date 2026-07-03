@@ -8,6 +8,7 @@
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+  --font-playfair: var(--font-playfair), serif;
 
   --shadow-luxury: 0 25px 50px -12px rgba(0, 0, 0, 0.18);
   --shadow-gold-glow: 0 0 40px rgba(212, 175, 55, 0.4);
