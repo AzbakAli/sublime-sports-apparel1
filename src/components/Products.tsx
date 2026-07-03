@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Sparkles } from "lucide-react";
 
 const products = [
-  { title: "Baseball", desc: "Premium baseball uniforms and jerseys.", img: "/images/baseballcover.jpeg", count: "55 Designs", href: "/products/baseball" },
+  { title: "Baseball", desc: "Premium baseball uniforms and jerseys.", img: "/images/baseballcover1.jpeg", count: "55 Designs", href: "/products/baseball" },
   { title: "Basketball", desc: "High-performance basketball kits.", img: "/images/basketballcover.jpeg", count: "50 Designs", href: "/products/basketball" },
   { title: "Soccer", desc: "Professional soccer uniforms.", img: "/images/soccercover.jpeg", count: "50 Designs", href: "/products/soccer" },
   { title: "Football", desc: "Custom football jerseys and gear.", img: "/images/footballcover.jpeg", count: "50 Designs", href: "/products/football" },
