@@ -26,6 +26,9 @@ const productTypes = [
   { name: "Basketball", href: "/products/basketball" },
   { name: "Soccer", href: "/products/soccer" },
   { name: "Football", href: "/products/football" },
+  { name: "Ice Hockey", href: "/products/icehockey" },
+  { name: "Sublimated Hoodies", href: "/products/sublimatedhoodies" },
+  { name: "Sublimated T-Shirts & Polo", href: "/products/sublimatedtshirtpolo" },
 ];
 
 export default function Navbar() {

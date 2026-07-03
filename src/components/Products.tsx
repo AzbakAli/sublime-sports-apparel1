@@ -7,8 +7,9 @@ const products = [
   { title: "Basketball", desc: "High-performance basketball kits.", img: "/images/basketballcover.jpeg", count: "50 Designs", href: "/products/basketball" },
   { title: "Soccer", desc: "Professional soccer uniforms.", img: "/images/soccercover.jpeg", count: "50 Designs", href: "/products/soccer" },
   { title: "Football", desc: "Custom football jerseys and gear.", img: "/images/footballcover.jpeg", count: "50 Designs", href: "/products/football" },
-  { title: "Baseball Jerseys", desc: "Tie-dye and classic button-ups.", img: "https://z-cdn-media.chatglm.cn/files/8392e93c-eacb-4752-817c-06b157b0e280.png?auth_key=1882131241-5e0d3ef9cd124b70b17fde42ea3c4ec2-0-31574fe1e7dd5394463ac303f690dca3", count: "Custom", href: "/#contact" },
-  { title: "Basketball Uniforms", desc: "Breathable tanks & shorts sets.", img: "https://z-cdn-media.chatglm.cn/files/cd4ae295-2092-474d-861a-547348dd2593.png?auth_key=1882131241-2ea63861f75349cb9f3a30ac18317d00-0-02687150ecc2fa95da606f776894cb46", count: "Custom", href: "/#contact" },
+  { title: "Ice Hockey", desc: "Premium ice hockey uniforms and jerseys.", img: "/images/icehockeycover.jpeg", count: "40 Designs", href: "/products/icehockey" },
+  { title: "Sublimated Hoodies", desc: "Custom sublimated hoodies with vibrant designs.", img: "/images/sublimatedhoodiescover.jpeg", count: "30 Designs", href: "/products/sublimatedhoodies" },
+  { title: "Sublimated T-Shirts & Polo", desc: "Premium sublimated t-shirts and polo shirts.", img: "/images/sublimatedthsirts&polocover.jpeg", count: "50 Designs", href: "/products/sublimatedtshirtpolo" },
 ];
 
 export default function Products() {
