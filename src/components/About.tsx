@@ -17,6 +17,7 @@ const intro =
 const body = [
   "With years of industry experience, we produce custom apparel and patches designed for durability, comfort, and style — vibrant, long-lasting designs that won't crack, peel, or fade.",
   "Using advanced sublimation printing technology and premium materials, we deliver fully customized sportswear with superior comfort. Our range includes jerseys, team uniforms, T-shirts, polo shirts, hoodies, leggings, tracksuits, cycling wear, and more.",
+  "We manufacture in Pakistan as overseas manufacturers, which allows us to offer cost-effective pricing while maintaining quality that is up to international standards.",
   "We also manufacture embroidered, woven, sublimated, PVC, chenille, and leather patches, crafted with precision to meet your exact requirements.",
   "Our focus is simple: exceptional quality, competitive pricing, reliable service, and on-time delivery. From design to production, we work closely with our customers to bring their ideas to life.",
 ];
@@ -81,7 +82,7 @@ export default function About() {
             </p>
             <div className="mt-5 space-y-3.5">
               {body.map((text, i) => (
-                <p key={i} className="text-sm md:text-[15px] text-primary/85 leading-[1.7]">
+                <p key={i} className={`text-sm md:text-[15px] leading-[1.7] ${text.includes("We manufacture in Pakistan") ? "text-accent font-bold" : "text-primary/85"}`}>
                   {text}
                 </p>
               ))}

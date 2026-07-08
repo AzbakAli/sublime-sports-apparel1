@@ -8,8 +8,10 @@ const products = [
   { title: "Soccer", desc: "Professional soccer uniforms.", img: "/images/soccercover.jpeg", count: "50 Designs", href: "/products/soccer" },
   { title: "Football", desc: "Custom football jerseys and gear.", img: "/images/footballcover.jpeg", count: "50 Designs", href: "/products/football" },
   { title: "Ice Hockey", desc: "Premium ice hockey uniforms and jerseys.", img: "/images/icehockeycover.jpeg", count: "40 Designs", href: "/products/icehockey" },
+  { title: "Athletic Apparel", desc: "Tennis, Cycling, Running, Swimming", img: "/images/athleticapparelcover.jpeg", count: "32 Designs", href: "/products/athleticapparel" },
   { title: "Sublimated Hoodies", desc: "Custom sublimated hoodies with vibrant designs.", img: "/images/sublimatedhoodiescover.jpeg", count: "30 Designs", href: "/products/sublimatedhoodies" },
   { title: "Sublimated T-Shirts & Polo", desc: "Premium sublimated t-shirts and polo shirts.", img: "/images/sublimatedthsirts&polocover.jpeg", count: "50 Designs", href: "/products/sublimatedtshirtpolo" },
+  { title: "Wrestling Singlet", desc: "High-performance wrestling singlets for competition.", img: "/images/wrestlingsingletcover.jpeg", count: "28 Designs", href: "/products/wrestlingsinglet" },
 ];
 
 export default function Products() {

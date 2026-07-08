@@ -8,8 +8,10 @@ const productTypes = [
   { name: "Soccer", href: "/products/soccer" },
   { name: "Football", href: "/products/football" },
   { name: "Ice Hockey", href: "/products/icehockey" },
+  { name: "Athletic Apparel", href: "/products/athleticapparel" },
   { name: "Sublimated Hoodies", href: "/products/sublimatedhoodies" },
   { name: "T-Shirts & Polo", href: "/products/sublimatedtshirtpolo" },
+  { name: "Wrestling Singlet", href: "/products/wrestlingsinglet" },
 ];
 
 export default function ProductNavigation() {
@@ -18,7 +20,7 @@ export default function ProductNavigation() {
   return (
     <div className="w-full bg-white border-b border-gray-200 pt-36">
       <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-center gap-2 overflow-x-auto scrollbar-hide">
+        <div className="flex items-center justify-center gap-2 flex-wrap">
           {productTypes.map((product, index) => {
             const isActive = pathname === product.href;
             return (

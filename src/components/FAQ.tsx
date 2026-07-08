@@ -8,7 +8,7 @@ const faqs = [
   { q: "Do you ship worldwide?", a: "Yes, we provide worldwide shipping. We partner with major logistics companies to ensure safe and tracked delivery to your destination." },
   { q: "Can I customize designs entirely?", a: "Absolutely. With our sublimation printing, you have 100% freedom over the design. You can provide your own artwork or have our team create a design based on your concepts." },
   { q: "What file formats do you accept?", a: "For sublimation and printing, we prefer vector files (AI, EPS, PDF) or high-resolution PNG/JPG. If you only have a sketch, our team can redraw it for you." },
-  { q: "What is the minimum order quantity (MOQ)?", a: "Our standard MOQ is 30 pieces per design. However, for custom patches and digitizing, we can accommodate smaller runs. Contact us for details." },
+  { q: "What is the minimum order quantity (MOQ)?", a: "Our standard MOQ is 10 pieces per design for apparel. Contact us for details on custom orders." },
 ];
 
 export default function FAQ() {

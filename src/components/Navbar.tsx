@@ -27,8 +27,10 @@ const productTypes = [
   { name: "Soccer", href: "/products/soccer" },
   { name: "Football", href: "/products/football" },
   { name: "Ice Hockey", href: "/products/icehockey" },
+  { name: "Athletic Apparel", href: "/products/athleticapparel" },
   { name: "Sublimated Hoodies", href: "/products/sublimatedhoodies" },
   { name: "Sublimated T-Shirts & Polo", href: "/products/sublimatedtshirtpolo" },
+  { name: "Wrestling Singlet", href: "/products/wrestlingsinglet" },
 ];
 
 export default function Navbar() {
@@ -177,8 +179,11 @@ export default function Navbar() {
           })}
         </div>
 
-        <div className="hidden md:block">
-          <a href="#contact" className="group inline-flex items-center gap-2 bg-gradient-to-r from-accent to-yellow-600 text-primary px-6 py-3 rounded-full text-sm font-bold hover:shadow-gold-glow transition-all duration-300 hover:scale-105">
+        <div className="hidden md:flex items-center gap-3">
+          <a href="#products" className="group inline-flex items-center gap-2 border border-white/30 bg-black/30 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-black/50 hover:border-white/50 transition-all duration-300">
+            View Products
+          </a>
+          <a href="#contact" className="group inline-flex items-center gap-2 bg-gradient-to-r from-accent to-yellow-600 text-primary px-5 py-2.5 rounded-full text-sm font-bold hover:shadow-gold-glow transition-all duration-300 hover:scale-105">
             Get Free Quote
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </a>
