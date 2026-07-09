@@ -57,21 +57,38 @@ function validateEmail(email: string): boolean {
 }
 
 function validateFile(file: FileData): { valid: boolean; error?: string } {
-  const allowedTypes = [
+  const allowedMimeTypes = [
     "image/png",
     "image/jpeg",
     "image/jpg",
+    "image/pjpeg",
     "application/pdf",
     "application/postscript",
+    "application/illustrator",
   ];
+  
+  const allowedExtensions = [".png", ".jpg", ".jpeg", ".pdf", ".ai", ".eps"];
   const maxSize = 10 * 1024 * 1024; // 10MB
 
-  if (!allowedTypes.includes(file.type)) {
-    return { valid: false, error: "Invalid file type. Allowed: PNG, JPG, JPEG, PDF, AI" };
-  }
-
+  // Check file size first
   if (file.content.length > maxSize) {
     return { valid: false, error: "File size exceeds 10MB limit" };
+  }
+
+  // Normalize file extension to lowercase
+  const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf("."));
+  
+  // Validate by MIME type (if available)
+  if (file.type && !allowedMimeTypes.includes(file.type)) {
+    // If MIME type is not recognized, fall back to extension validation
+    if (!allowedExtensions.includes(fileExtension)) {
+      return { valid: false, error: "Invalid file type. Allowed: PNG, JPG, JPEG, PDF, AI" };
+    }
+  }
+
+  // Validate by file extension
+  if (!allowedExtensions.includes(fileExtension)) {
+    return { valid: false, error: "Invalid file type. Allowed: PNG, JPG, JPEG, PDF, AI" };
   }
 
   return { valid: true };
@@ -115,10 +132,11 @@ function parseMultipartFormData(event: any): Promise<{ formData: FormData; fileD
           chunks.push(chunk);
         });
         file.on("end", () => {
+          const content = Buffer.concat(chunks);
           fileData = {
             name: filename,
             type: mimetype,
-            content: Buffer.concat(chunks),
+            content: content,
           };
         });
       }
