@@ -149,8 +149,35 @@ function parseMultipartFormData(event: any): Promise<{ formData: FormData; fileD
       else if (fieldname === "message") formData.message = value;
     });
 
-    busboy.on("file", (fieldname: string, file: any, filename: string, encoding: string, mimetype: string) => {
-      console.log("[DEBUG] Busboy file event - fieldname:", fieldname, "filename:", filename, "mimetype:", mimetype);
+    busboy.on("file", (...args: any[]) => {
+      console.log("[DEBUG] Busboy file event - arguments count:", args.length);
+      console.log("[DEBUG] Busboy file event - arguments:", args.map((arg, i) => ({ index: i, type: typeof arg, value: typeof arg === 'object' ? JSON.stringify(arg) : arg })));
+      
+      // Handle both Busboy API versions
+      let fieldname: string;
+      let file: any;
+      let filename: string;
+      let encoding: string;
+      let mimetype: string;
+
+      if (args.length === 3) {
+        // Newer API: (fieldname, file, info)
+        const info = args[2];
+        fieldname = args[0];
+        file = args[1];
+        filename = info.filename;
+        encoding = info.encoding;
+        mimetype = info.mimeType;
+      } else if (args.length >= 4) {
+        // Older API: (fieldname, file, filename, encoding, mimetype)
+        [fieldname, file, filename, encoding, mimetype] = args;
+      } else {
+        console.error("[ERROR] Unexpected Busboy file event signature");
+        return;
+      }
+
+      console.log("[DEBUG] Extracted - fieldname:", fieldname, "filename:", filename, "mimetype:", mimetype);
+      
       if (fieldname === "file") {
         const chunks: Buffer[] = [];
         file.on("data", (chunk: Buffer) => {
