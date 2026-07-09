@@ -50,20 +50,20 @@ export default function About() {
         </div>
 
         {/* Image + intro — image dominant */}
-        <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-8 lg:gap-12 items-stretch">
+        <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-8 lg:gap-12 items-start">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-            className="relative min-h-[300px] sm:min-h-[380px] lg:min-h-[450px] rounded-2xl overflow-hidden shadow-luxury border border-black/10 bg-primary"
+            className="relative rounded-2xl overflow-hidden shadow-luxury border border-black/10 bg-white"
           >
             {/* Native img for full resolution — no compression */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/about-patches.jpg"
               alt="Sublimated sports apparel and custom patches — leather, embroidered, PVC and team uniforms"
-              className="absolute inset-0 w-full h-full object-cover object-center"
+              className="w-full h-auto object-cover rounded-2xl"
               loading="lazy"
               decoding="async"
             />
