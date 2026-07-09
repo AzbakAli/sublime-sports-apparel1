@@ -170,6 +170,8 @@ export async function handler(event: any) {
   }
 
   try {
+    console.log("[DEBUG] Request received. Content-Type:", event.headers["content-type"] || event.headers["Content-Type"]);
+    
     // Rate limiting
     const ip = event.headers["client-ip"] || event.headers["x-forwarded-for"] || "unknown";
     if (!checkRateLimit(ip)) {
@@ -184,13 +186,21 @@ export async function handler(event: any) {
     let formData: FormData;
     let fileData: FileData | null = null;
 
+    console.log("[DEBUG] Content-Type includes multipart:", contentType.includes("multipart/form-data"));
+
     if (contentType.includes("multipart/form-data")) {
       // Handle multipart form data with file using Busboy
+      console.log("[DEBUG] Parsing multipart form data...");
       const parsed = await parseMultipartFormData(event);
       formData = parsed.formData;
       fileData = parsed.fileData;
+      console.log("[DEBUG] Parsed. File data present:", !!fileData);
+      if (fileData) {
+        console.log("[DEBUG] File info:", { name: fileData.name, type: fileData.type, size: fileData.content.length });
+      }
     } else {
       // Handle JSON form data without file
+      console.log("[DEBUG] Parsing JSON form data...");
       const body = JSON.parse(event.body);
       formData = {
         fullName: body.fullName || "",
@@ -233,13 +243,16 @@ export async function handler(event: any) {
 
     // Validate file if present
     if (fileData) {
+      console.log("[DEBUG] Validating file...");
       const validation = validateFile(fileData);
       if (!validation.valid) {
+        console.log("[DEBUG] File validation failed:", validation.error);
         return {
           statusCode: 400,
           body: JSON.stringify({ error: validation.error }),
         };
       }
+      console.log("[DEBUG] File validation passed");
     }
 
     // Get current date and time
@@ -254,6 +267,7 @@ export async function handler(event: any) {
       minute: "2-digit",
     });
 
+    console.log("[DEBUG] Rendering admin email...");
     // Render admin email
     const adminEmailHtml = await render(
       AdminEmail({
@@ -269,6 +283,7 @@ export async function handler(event: any) {
         submissionTime,
       })
     );
+    console.log("[DEBUG] Admin email rendered");
 
     // Send admin email
     const adminEmailData = {
@@ -287,14 +302,18 @@ export async function handler(event: any) {
         : [],
     };
 
+    console.log("[DEBUG] Sending admin email with", fileData ? "attachment" : "no attachment");
     await resend.emails.send(adminEmailData);
+    console.log("[DEBUG] Admin email sent");
 
+    console.log("[DEBUG] Rendering customer email...");
     // Render customer email
     const customerEmailHtml = await render(
       CustomerEmail({
         fullName: formData.fullName,
       })
     );
+    console.log("[DEBUG] Customer email rendered");
 
     // Send customer confirmation email
     const customerEmailData = {
@@ -304,14 +323,17 @@ export async function handler(event: any) {
       html: customerEmailHtml,
     };
 
+    console.log("[DEBUG] Sending customer email...");
     await resend.emails.send(customerEmailData);
+    console.log("[DEBUG] Customer email sent");
 
     return {
       statusCode: 200,
       body: JSON.stringify({ success: true, message: "Quote request submitted successfully" }),
     };
   } catch (error) {
-    console.error("Error processing quote request:", error);
+    console.error("[ERROR] Error processing quote request:", error);
+    console.error("[ERROR] Error stack:", error instanceof Error ? error.stack : "No stack trace");
     return {
       statusCode: 500,
       body: JSON.stringify({ error: "Internal server error" }),
