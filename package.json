@@ -11,6 +11,8 @@
   "dependencies": {
     "@react-email/components": "^1.0.12",
     "@react-email/render": "^2.0.10",
+    "@types/busboy": "^1.5.4",
+    "busboy": "^1.6.0",
     "framer-motion": "^12.40.0",
     "lucide-react": "^0.468.0",
     "next": "16.2.9",

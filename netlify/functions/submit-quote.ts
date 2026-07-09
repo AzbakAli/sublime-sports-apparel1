@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { render } from "@react-email/render";
+import Busboy from "busboy";
 import AdminEmail from "../../src/emails/AdminEmail";
 import CustomerEmail from "../../src/emails/CustomerEmail";
 
@@ -76,6 +77,71 @@ function validateFile(file: FileData): { valid: boolean; error?: string } {
   return { valid: true };
 }
 
+function parseMultipartFormData(event: any): Promise<{ formData: FormData; fileData: FileData | null }> {
+  return new Promise((resolve, reject) => {
+    const contentType = event.headers["content-type"] || event.headers["Content-Type"] || "";
+    
+    const busboy = Busboy({
+      headers: {
+        "content-type": contentType,
+      },
+    });
+
+    const formData: FormData = {
+      fullName: "",
+      email: "",
+      phone: "",
+      country: "",
+      service: "",
+      message: "",
+    };
+    
+    let fileData: FileData | null = null;
+
+    busboy.on("field", (fieldname: string, value: string) => {
+      if (fieldname === "fullName") formData.fullName = value;
+      else if (fieldname === "company") formData.company = value;
+      else if (fieldname === "email") formData.email = value;
+      else if (fieldname === "phone") formData.phone = value;
+      else if (fieldname === "country") formData.country = value;
+      else if (fieldname === "service") formData.service = value;
+      else if (fieldname === "message") formData.message = value;
+    });
+
+    busboy.on("file", (fieldname: string, file: any, filename: string, encoding: string, mimetype: string) => {
+      if (fieldname === "file") {
+        const chunks: Buffer[] = [];
+        file.on("data", (chunk: Buffer) => {
+          chunks.push(chunk);
+        });
+        file.on("end", () => {
+          fileData = {
+            name: filename,
+            type: mimetype,
+            content: Buffer.concat(chunks),
+          };
+        });
+      }
+    });
+
+    busboy.on("finish", () => {
+      resolve({ formData, fileData });
+    });
+
+    busboy.on("error", (error: Error) => {
+      reject(error);
+    });
+
+    // Handle both string and Buffer body
+    const body = event.body;
+    if (typeof body === "string") {
+      busboy.end(Buffer.from(body, "base64"));
+    } else {
+      busboy.end(body);
+    }
+  });
+}
+
 export async function handler(event: any) {
   // Only allow POST requests
   if (event.httpMethod !== "POST") {
@@ -96,56 +162,15 @@ export async function handler(event: any) {
     }
 
     // Parse form data
-    const contentType = event.headers["content-type"] || "";
+    const contentType = event.headers["content-type"] || event.headers["Content-Type"] || "";
     let formData: FormData;
     let fileData: FileData | null = null;
 
     if (contentType.includes("multipart/form-data")) {
-      // Handle multipart form data with file
-      const boundary = contentType.match(/boundary=([^;]+)/)?.[1];
-      if (!boundary) {
-        return {
-          statusCode: 400,
-          body: JSON.stringify({ error: "Invalid multipart boundary" }),
-        };
-      }
-
-      const parts = event.body.split(`--${boundary}`);
-      formData = {
-        fullName: "",
-        email: "",
-        phone: "",
-        country: "",
-        service: "",
-        message: "",
-      };
-
-      for (const part of parts) {
-        if (part.includes("Content-Disposition")) {
-          const nameMatch = part.match(/name="([^"]+)"/);
-          const filenameMatch = part.match(/filename="([^"]+)"/);
-          const contentTypeMatch = part.match(/Content-Type: ([^\r\n]+)/);
-
-          if (nameMatch) {
-            const fieldName = nameMatch[1];
-            const value = part.split("\r\n\r\n")[1]?.split("\r\n")[0] || "";
-
-            if (filenameMatch && contentTypeMatch) {
-              // This is a file
-              fileData = {
-                name: filenameMatch[1],
-                type: contentTypeMatch[1],
-                content: Buffer.from(value, "base64"),
-              };
-            } else {
-              // This is a regular field
-              if (fieldName in formData) {
-                formData[fieldName as keyof FormData] = value;
-              }
-            }
-          }
-        }
-      }
+      // Handle multipart form data with file using Busboy
+      const parsed = await parseMultipartFormData(event);
+      formData = parsed.formData;
+      fileData = parsed.fileData;
     } else {
       // Handle JSON form data without file
       const body = JSON.parse(event.body);
