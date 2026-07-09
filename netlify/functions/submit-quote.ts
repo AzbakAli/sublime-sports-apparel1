@@ -57,6 +57,13 @@ function validateEmail(email: string): boolean {
 }
 
 function validateFile(file: FileData): { valid: boolean; error?: string } {
+  console.log("[DEBUG] validateFile called with file object:", JSON.stringify({ 
+    name: file.name, 
+    nameType: typeof file.name,
+    type: file.type, 
+    size: file.content?.length 
+  }));
+
   const allowedMimeTypes = [
     "image/png",
     "image/jpeg",
@@ -75,11 +82,26 @@ function validateFile(file: FileData): { valid: boolean; error?: string } {
     return { valid: false, error: "File size exceeds 10MB limit" };
   }
 
+  // Safely get filename - handle different property names
+  const filename = typeof file.name === "string" 
+    ? file.name 
+    : typeof (file as any).filename === "string"
+      ? (file as any).filename
+      : "";
+  
+  console.log("[DEBUG] Extracted filename:", filename, "type:", typeof filename);
+
+  if (!filename) {
+    return { valid: false, error: "Invalid file: missing filename" };
+  }
+
   // Normalize file extension to lowercase
-  const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf("."));
+  const fileExtension = filename.toLowerCase().substring(filename.lastIndexOf("."));
+  console.log("[DEBUG] File extension:", fileExtension);
   
   // Validate by MIME type (if available)
   if (file.type && !allowedMimeTypes.includes(file.type)) {
+    console.log("[DEBUG] MIME type not in allowed list:", file.type);
     // If MIME type is not recognized, fall back to extension validation
     if (!allowedExtensions.includes(fileExtension)) {
       return { valid: false, error: "Invalid file type. Allowed: PNG, JPG, JPEG, PDF, AI" };
@@ -88,9 +110,11 @@ function validateFile(file: FileData): { valid: boolean; error?: string } {
 
   // Validate by file extension
   if (!allowedExtensions.includes(fileExtension)) {
+    console.log("[DEBUG] Extension not in allowed list:", fileExtension);
     return { valid: false, error: "Invalid file type. Allowed: PNG, JPG, JPEG, PDF, AI" };
   }
 
+  console.log("[DEBUG] File validation passed");
   return { valid: true };
 }
 
@@ -126,6 +150,7 @@ function parseMultipartFormData(event: any): Promise<{ formData: FormData; fileD
     });
 
     busboy.on("file", (fieldname: string, file: any, filename: string, encoding: string, mimetype: string) => {
+      console.log("[DEBUG] Busboy file event - fieldname:", fieldname, "filename:", filename, "mimetype:", mimetype);
       if (fieldname === "file") {
         const chunks: Buffer[] = [];
         file.on("data", (chunk: Buffer) => {
@@ -133,11 +158,13 @@ function parseMultipartFormData(event: any): Promise<{ formData: FormData; fileD
         });
         file.on("end", () => {
           const content = Buffer.concat(chunks);
+          console.log("[DEBUG] File complete - filename:", filename, "size:", content.length, "type:", mimetype);
           fileData = {
             name: filename,
             type: mimetype,
             content: content,
           };
+          console.log("[DEBUG] FileData object:", JSON.stringify({ name: fileData?.name, type: fileData?.type, size: fileData?.content?.length }));
         });
       }
     });

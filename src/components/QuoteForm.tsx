@@ -1,7 +1,7 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle, UploadCloud, Send, Mail, Phone, MapPin, Clock, AlertCircle, Loader2 } from "lucide-react";
+import { CheckCircle, UploadCloud, Send, Mail, Phone, MapPin, Clock, AlertCircle, Loader2, X } from "lucide-react";
 
 const contactInfo = [
   {
@@ -33,16 +33,27 @@ export default function QuoteForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Revoke object URL on cleanup to avoid memory leaks
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       // Validate file type
-      const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "application/pdf", "application/postscript"];
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif", "application/pdf", "application/postscript"];
       if (!allowedTypes.includes(selectedFile.type)) {
-        setError("Invalid file type. Allowed: PNG, JPG, JPEG, PDF, AI");
+        setError("Invalid file type. Allowed: PNG, JPG, JPEG, WEBP, GIF, PDF, AI");
         setFile(null);
+        setPreviewUrl(null);
         return;
       }
 
@@ -50,12 +61,38 @@ export default function QuoteForm() {
       if (selectedFile.size > 10 * 1024 * 1024) {
         setError("File size exceeds 10MB limit");
         setFile(null);
+        setPreviewUrl(null);
         return;
       }
 
       setFile(selectedFile);
       setError(null);
+
+      // Create preview URL for images
+      if (selectedFile.type.startsWith("image/")) {
+        const url = URL.createObjectURL(selectedFile);
+        setPreviewUrl(url);
+      } else {
+        setPreviewUrl(null);
+      }
     }
+  };
+
+  const handleRemoveFile = () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    setFile(null);
+    setPreviewUrl(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -86,6 +123,10 @@ export default function QuoteForm() {
       setSubmitted(true);
       form.reset();
       setFile(null);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        setPreviewUrl(null);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred. Please try again.");
     } finally {
@@ -195,21 +236,52 @@ export default function QuoteForm() {
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-primary/70 mb-3">Upload Design/File (Optional)</label>
-                    <div className="w-full px-5 py-8 rounded-xl bg-light-gray border border-dashed border-primary/20 flex flex-col items-center justify-center cursor-pointer hover:border-accent transition-colors" onClick={() => fileInputRef.current?.click()}>
-                      <UploadCloud className="w-10 h-10 text-primary/30 mb-3" />
-                      <span className="text-sm text-primary/60 font-medium">Click to upload or drag and drop</span>
-                      <span className="text-xs text-primary/30 mt-2">PNG, JPG, PDF, AI up to 10MB</span>
-                      {file && (
-                        <span className="text-sm text-accent font-medium mt-2">{file.name}</span>
-                      )}
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        className="hidden"
-                        accept=".png,.jpg,.jpeg,.pdf,.ai"
-                        onChange={handleFileChange}
-                      />
-                    </div>
+                    {!file ? (
+                      <div className="w-full px-5 py-8 rounded-xl bg-light-gray border border-dashed border-primary/20 flex flex-col items-center justify-center cursor-pointer hover:border-accent transition-colors" onClick={() => fileInputRef.current?.click()}>
+                        <UploadCloud className="w-10 h-10 text-primary/30 mb-3" />
+                        <span className="text-sm text-primary/60 font-medium">Click to upload or drag and drop</span>
+                        <span className="text-xs text-primary/30 mt-2">PNG, JPG, JPEG, WEBP, GIF, PDF, AI up to 10MB</span>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          className="hidden"
+                          accept=".png,.jpg,.jpeg,.webp,.gif,.pdf,.ai"
+                          onChange={handleFileChange}
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-full p-4 rounded-xl bg-light-gray border border-primary/20">
+                        <div className="flex items-start gap-4">
+                          {previewUrl ? (
+                            <div className="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white">
+                              <img src={previewUrl} alt={file.name} className="w-full h-full object-cover" />
+                            </div>
+                          ) : (
+                            <div className="w-20 h-20 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                              <UploadCloud className="w-8 h-8 text-primary/40" />
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-primary truncate">{file.name}</p>
+                            <p className="text-xs text-primary/50 mt-1">{formatFileSize(file.size)}</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={handleRemoveFile}
+                            className="p-2 rounded-lg hover:bg-red-50 text-primary/50 hover:text-red-500 transition-colors"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          className="hidden"
+                          accept=".png,.jpg,.jpeg,.webp,.gif,.pdf,.ai"
+                          onChange={handleFileChange}
+                        />
+                      </div>
+                    )}
                   </div>
                   {error && (
                     <div className="md:col-span-2">
