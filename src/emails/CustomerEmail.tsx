@@ -26,7 +26,7 @@ export default function CustomerEmail({ fullName }: CustomerEmailProps) {
           <Text style={greeting}>Dear {fullName},</Text>
           
           <Text style={text}>
-            Thank you for contacting <strong>Custom Sublimated Sports Apparel (CSSA)</strong>.
+            Thank you for contacting <strong>Sublimated Sports Apparel</strong>.
           </Text>
           
           <Text style={text}>
@@ -43,12 +43,12 @@ export default function CustomerEmail({ fullName }: CustomerEmailProps) {
           <Hr style={hr} />
           
           <Text style={text}>
-            Thank you for choosing Custom Sublimated Sports Apparel. We look forward to working with you!
+            Thank you for choosing Sublimated Sports Apparel. We look forward to working with you!
           </Text>
           
           <Section style={footer}>
             <Text style={footerText}>
-              Custom Sublimated Sports Apparel (CSSA)
+              Sublimated Sports Apparel
             </Text>
             <Text style={footerText}>
               Premium Quality Custom Sportswear
