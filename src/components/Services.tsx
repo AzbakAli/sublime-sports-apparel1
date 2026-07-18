@@ -8,6 +8,7 @@ import {
   Wind,
   MousePointerClick,
   Award,
+  Printer,
 } from "lucide-react";
 
 const services = [
@@ -18,6 +19,7 @@ const services = [
   { icon: Flame, title: "Heat Transfer", desc: "Detailed, high-resolution transfers." },
   { icon: MousePointerClick, title: "Digitizing Services", desc: "Artwork to embroidery files." },
   { icon: Award, title: "Custom Patches", desc: "Chenille, PVC, woven, leather." },
+  { icon: Printer, title: "DTF Printing", desc: "Direct-to-film transfers with vibrant colors and excellent detail." },
 ];
 
 export default function Services() {

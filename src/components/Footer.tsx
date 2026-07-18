@@ -38,6 +38,7 @@ export default function Footer() {
             <li><a href="/#about" className="hover:text-accent transition-colors">About Us</a></li>
             <li><a href="/patches" className="hover:text-accent transition-colors">Patches</a></li>
             <li><a href="/#contact" className="hover:text-accent transition-colors">Contact</a></li>
+            <li><a href="/terms-of-service" className="hover:text-accent transition-colors">Terms of Service</a></li>
           </ul>
         </div>
 
@@ -57,26 +58,26 @@ export default function Footer() {
           <ul className="space-y-6 text-white/50 text-sm">
             <li className="flex items-start gap-4">
               <Mail className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
-              <a href="mailto:info@sublimesports.com" className="hover:text-accent transition-colors">
-                info@sublimesports.com
+              <a href="mailto:sales@sublimesportsapparel.net" className="hover:text-accent transition-colors">
+                sales@sublimesportsapparel.net
               </a>
             </li>
             <li className="flex items-start gap-4">
               <Phone className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
-              <a href="tel:+923001234567" className="hover:text-accent transition-colors">
-                +92 300 123 4567
+              <a href="tel:+17133671479" className="hover:text-accent transition-colors">
+                (713) 367-1479
               </a>
             </li>
             <li className="flex items-start gap-4">
               <MessageCircle className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
-              <span>WhatsApp: +92 300 123 4567</span>
+              <span>WhatsApp: (713) 367-1479</span>
             </li>
             <li className="flex items-start gap-4">
               <MapPin className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
               <span>
-                Industrial Area, Sialkot,
+                Industrial Area, Karachi,
                 <br />
-                Punjab, Pakistan
+                Sindh, Pakistan
               </span>
             </li>
           </ul>
@@ -88,8 +89,7 @@ export default function Footer() {
           © {new Date().getFullYear()} Sublime Sports Apparel. All rights reserved. · Sialkot, Pakistan
         </p>
         <div className="flex gap-8 text-white/30 text-xs">
-          <a href="#" className="hover:text-accent transition-colors">Privacy Policy</a>
-          <a href="#" className="hover:text-accent transition-colors">Terms of Service</a>
+          <a href="/terms-of-service" className="hover:text-accent transition-colors">Terms of Service</a>
         </div>
       </div>
     </footer>

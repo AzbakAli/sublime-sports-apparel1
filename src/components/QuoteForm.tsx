@@ -13,8 +13,8 @@ const contactInfo = [
   {
     icon: Phone,
     label: "Phone",
-    value: "+92 300 123 4567",
-    href: "tel:+923001234567",
+    value: "(713) 367-1479",
+    href: "tel:+17133671479",
   },
   {
     icon: MapPin,
@@ -24,7 +24,7 @@ const contactInfo = [
   {
     icon: Clock,
     label: "Business Hours",
-    value: "Mon – Sat, 9:00 AM – 5:00 PM (CST)",
+    value: "Mon – Sat, 9:00 AM – 5:00 PM Central Standard Time (CST)",
   },
 ];
 
@@ -213,7 +213,7 @@ export default function QuoteForm() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-primary/70 mb-3">Phone</label>
-                    <input required type="tel" name="phone" className="w-full px-5 py-4 rounded-xl bg-light-gray border border-transparent focus:border-accent focus:bg-white focus:outline-none transition-all" placeholder="+92 300 123 4567" />
+                    <input required type="tel" name="phone" className="w-full px-5 py-4 rounded-xl bg-light-gray border border-transparent focus:border-accent focus:bg-white focus:outline-none transition-all" placeholder="(713) 367-1479" />
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-primary/70 mb-3">Country</label>
