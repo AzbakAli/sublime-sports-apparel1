@@ -122,13 +122,13 @@ export default function QuoteForm() {
     setLoading(true);
     setError(null);
 
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
     try {
       const response = await fetch("/api/submit-quote", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ test: "data" }),
+        body: formData,
       });
 
       const text = await response.text();
@@ -146,6 +146,7 @@ export default function QuoteForm() {
       }
 
       setSubmitted(true);
+      form.reset();
       setFiles([]);
       setPreviewUrls([]);
     } catch (err) {
