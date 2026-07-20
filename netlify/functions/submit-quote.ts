@@ -196,190 +196,31 @@ function parseMultipartFormData(event: any): Promise<{ formData: FormData; files
 
 export async function handler(event: any) {
   console.log("=== FUNCTION INVOKED ===");
-  console.log("Event:", JSON.stringify({ httpMethod: event.httpMethod, headers: event.headers }));
   
-  // Only allow POST requests
-  if (event.httpMethod !== "POST") {
-    console.log("Method not allowed:", event.httpMethod);
-    return {
-      statusCode: 405,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "Method not allowed" }),
-    };
-  }
-
   try {
-    console.log("Request received:", { httpMethod: event.httpMethod, contentType: event.headers["content-type"] || event.headers["Content-Type"] });
+    console.log("Event:", JSON.stringify({ httpMethod: event.httpMethod }));
     
-    // Rate limiting
-    const ip = event.headers["client-ip"] || event.headers["x-forwarded-for"] || "unknown";
-    if (!checkRateLimit(ip)) {
-      console.log("Rate limit exceeded for IP:", ip);
+    // Only allow POST requests
+    if (event.httpMethod !== "POST") {
       return {
-        statusCode: 429,
+        statusCode: 405,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ error: "Too many requests. Please try again later." }),
+        body: JSON.stringify({ error: "Method not allowed" }),
       };
     }
 
-    // Parse form data
-    const contentType = event.headers["content-type"] || event.headers["Content-Type"] || "";
-    let formData: FormData;
-    let filesData: FileData[] = [];
-
-    if (contentType.includes("multipart/form-data")) {
-      console.log("Parsing multipart form data...");
-      // Handle multipart form data with file using Busboy
-      const parsed = await parseMultipartFormData(event);
-      formData = parsed.formData;
-      filesData = parsed.filesData;
-      console.log("Parsed form data:", { fullName: formData.fullName, email: formData.email, filesCount: filesData.length });
-    } else {
-      console.log("Parsing JSON form data...");
-      // Handle JSON form data without file
-      const body = JSON.parse(event.body);
-      formData = {
-        fullName: body.fullName || "",
-        company: body.company || "",
-        email: body.email || "",
-        phone: body.phone || "",
-        country: body.country || "",
-        service: body.service || "",
-        message: body.message || "",
-      };
-    }
-
-    // Validate required fields
-    const requiredFields = ["fullName", "email", "phone", "country", "service", "message"];
-    for (const field of requiredFields) {
-      if (!formData[field as keyof FormData]) {
-        console.log("Missing required field:", field);
-        return {
-          statusCode: 400,
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ error: `${field} is required` }),
-        };
-      }
-    }
-
-    // Validate email
-    if (!validateEmail(formData.email)) {
-      console.log("Invalid email:", formData.email);
-      return {
-        statusCode: 400,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ error: "Invalid email address" }),
-      };
-    }
-
-    // Sanitize inputs
-    formData.fullName = sanitizeInput(formData.fullName);
-    formData.company = formData.company ? sanitizeInput(formData.company) : undefined;
-    formData.email = sanitizeInput(formData.email);
-    formData.phone = sanitizeInput(formData.phone);
-    formData.country = sanitizeInput(formData.country);
-    formData.service = sanitizeInput(formData.service);
-    formData.message = sanitizeInput(formData.message);
-
-    // Validate files if present
-    if (filesData.length > 0) {
-      console.log("Validating", filesData.length, "files");
-      for (const file of filesData) {
-        const validation = validateFile(file);
-        if (!validation.valid) {
-          console.log("File validation failed:", validation.error);
-          return {
-            statusCode: 400,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ error: validation.error }),
-          };
-        }
-      }
-    }
-
-    // Get current date and time
-    const now = new Date();
-    const submissionDate = now.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-    const submissionTime = now.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    console.log("Rendering admin email...");
-    // Render admin email
-    const adminEmailHtml = await render(
-      AdminEmail({
-        fullName: formData.fullName,
-        company: formData.company,
-        email: formData.email,
-        phone: formData.phone,
-        country: formData.country,
-        service: formData.service,
-        message: formData.message,
-        hasAttachment: filesData.length > 0,
-        attachmentCount: filesData.length,
-        submissionDate,
-        submissionTime,
-      })
-    );
-    console.log("Admin email rendered");
-
-    // Send admin email
-    const adminEmailData = {
-      from: "Sublime Sports Apparel <noreply@sublimesportsapparel.net>",
-      to: "sales@sublimesportsapparel.net",
-      replyTo: formData.email,
-      subject: `New Quote Request – ${formData.fullName}`,
-      html: adminEmailHtml,
-      attachments: filesData.map(file => ({
-        filename: file.name,
-        content: file.content,
-      })),
-    };
-
-    console.log("Sending admin email with", filesData.length, "attachments");
-    await resend.emails.send(adminEmailData);
-    console.log("Admin email sent");
-
-    console.log("Rendering customer email...");
-    // Render customer email
-    const customerEmailHtml = await render(
-      CustomerEmail({
-        fullName: formData.fullName,
-      })
-    );
-    console.log("Customer email rendered");
-
-    // Send customer confirmation email
-    const customerEmailData = {
-      from: "Sublime Sports Apparel <noreply@sublimesportsapparel.net>",
-      to: formData.email,
-      subject: "We've Received Your Quote Request",
-      html: customerEmailHtml,
-    };
-
-    console.log("Sending customer email...");
-    await resend.emails.send(customerEmailData);
-    console.log("Customer email sent");
-
-    const response = {
+    // Simple test response
+    return {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ success: true, message: "Quote request submitted successfully" }),
+      body: JSON.stringify({ success: true, message: "Function is working" }),
     };
-    console.log("Returning success response");
-    return response;
   } catch (error) {
-    console.error("Error processing quote request:", error);
-    console.error("Error stack:", error instanceof Error ? error.stack : "No stack");
+    console.error("Error:", error);
     return {
       statusCode: 500,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "Internal server error", details: error instanceof Error ? error.message : "Unknown error" }),
+      body: JSON.stringify({ error: "Internal server error", details: error instanceof Error ? error.message : "Unknown" }),
     };
   }
 }
