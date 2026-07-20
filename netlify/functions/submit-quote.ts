@@ -199,6 +199,7 @@ export async function handler(event: any) {
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ error: "Method not allowed" }),
     };
   }
@@ -209,6 +210,7 @@ export async function handler(event: any) {
     if (!checkRateLimit(ip)) {
       return {
         statusCode: 429,
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ error: "Too many requests. Please try again later." }),
       };
     }
@@ -243,6 +245,7 @@ export async function handler(event: any) {
       if (!formData[field as keyof FormData]) {
         return {
           statusCode: 400,
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ error: `${field} is required` }),
         };
       }
@@ -252,6 +255,7 @@ export async function handler(event: any) {
     if (!validateEmail(formData.email)) {
       return {
         statusCode: 400,
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ error: "Invalid email address" }),
       };
     }
@@ -272,6 +276,7 @@ export async function handler(event: any) {
         if (!validation.valid) {
           return {
             statusCode: 400,
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ error: validation.error }),
           };
         }
@@ -341,12 +346,14 @@ export async function handler(event: any) {
 
     return {
       statusCode: 200,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ success: true, message: "Quote request submitted successfully" }),
     };
   } catch (error) {
     console.error("Error processing quote request:", error);
     return {
       statusCode: 500,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ error: "Internal server error" }),
     };
   }
