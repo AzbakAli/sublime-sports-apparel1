@@ -69,10 +69,6 @@ export default function Footer() {
               </a>
             </li>
             <li className="flex items-start gap-4">
-              <MessageCircle className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
-              <span>WhatsApp: (713) 367-1479</span>
-            </li>
-            <li className="flex items-start gap-4">
               <MapPin className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
               <span>
                 Industrial Area, Karachi,
@@ -86,7 +82,7 @@ export default function Footer() {
 
       <div className="border-t border-white/5 mt-20 pt-8 max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="text-white/30 text-xs">
-          © {new Date().getFullYear()} Sublime Sports Apparel. All rights reserved. · Sialkot, Pakistan
+          © {new Date().getFullYear()} Sublime Sports Apparel. All rights reserved. · Karachi, Pakistan
         </p>
         <div className="flex gap-8 text-white/30 text-xs">
           <a href="/terms-of-service" className="hover:text-accent transition-colors">Terms of Service</a>

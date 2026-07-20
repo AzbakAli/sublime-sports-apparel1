@@ -21,6 +21,7 @@ interface AdminEmailProps {
   service: string;
   message: string;
   hasAttachment: boolean;
+  attachmentCount?: number;
   submissionDate: string;
   submissionTime: string;
 }
@@ -34,6 +35,7 @@ export default function AdminEmail({
   service,
   message,
   hasAttachment,
+  attachmentCount,
   submissionDate,
   submissionTime,
 }: AdminEmailProps) {
@@ -75,7 +77,11 @@ export default function AdminEmail({
             <Text style={messageText}>{message}</Text>
             
             {hasAttachment && (
-              <Text style={attachmentText}>📎 A design file has been attached to this email.</Text>
+              <Text style={attachmentText}>
+                📎 {attachmentCount && attachmentCount > 1 
+                  ? `${attachmentCount} design files have been attached to this email.` 
+                  : 'A design file has been attached to this email.'}
+              </Text>
             )}
             
             <Hr style={hr} />

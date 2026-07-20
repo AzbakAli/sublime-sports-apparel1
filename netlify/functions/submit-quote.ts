@@ -57,13 +57,6 @@ function validateEmail(email: string): boolean {
 }
 
 function validateFile(file: FileData): { valid: boolean; error?: string } {
-  console.log("[DEBUG] validateFile called with file object:", JSON.stringify({ 
-    name: file.name, 
-    nameType: typeof file.name,
-    type: file.type, 
-    size: file.content?.length 
-  }));
-
   const allowedMimeTypes = [
     "image/png",
     "image/jpeg",
@@ -89,19 +82,15 @@ function validateFile(file: FileData): { valid: boolean; error?: string } {
       ? (file as any).filename
       : "";
   
-  console.log("[DEBUG] Extracted filename:", filename, "type:", typeof filename);
-
   if (!filename) {
     return { valid: false, error: "Invalid file: missing filename" };
   }
 
   // Normalize file extension to lowercase
   const fileExtension = filename.toLowerCase().substring(filename.lastIndexOf("."));
-  console.log("[DEBUG] File extension:", fileExtension);
   
   // Validate by MIME type (if available)
   if (file.type && !allowedMimeTypes.includes(file.type)) {
-    console.log("[DEBUG] MIME type not in allowed list:", file.type);
     // If MIME type is not recognized, fall back to extension validation
     if (!allowedExtensions.includes(fileExtension)) {
       return { valid: false, error: "Invalid file type. Allowed: PNG, JPG, JPEG, PDF, AI" };
@@ -110,15 +99,13 @@ function validateFile(file: FileData): { valid: boolean; error?: string } {
 
   // Validate by file extension
   if (!allowedExtensions.includes(fileExtension)) {
-    console.log("[DEBUG] Extension not in allowed list:", fileExtension);
     return { valid: false, error: "Invalid file type. Allowed: PNG, JPG, JPEG, PDF, AI" };
   }
 
-  console.log("[DEBUG] File validation passed");
   return { valid: true };
 }
 
-function parseMultipartFormData(event: any): Promise<{ formData: FormData; fileData: FileData | null }> {
+function parseMultipartFormData(event: any): Promise<{ formData: FormData; filesData: FileData[] }> {
   return new Promise((resolve, reject) => {
     const contentType = event.headers["content-type"] || event.headers["Content-Type"] || "";
     
@@ -137,7 +124,7 @@ function parseMultipartFormData(event: any): Promise<{ formData: FormData; fileD
       message: "",
     };
     
-    let fileData: FileData | null = null;
+    const filesData: FileData[] = [];
 
     busboy.on("field", (fieldname: string, value: string) => {
       if (fieldname === "fullName") formData.fullName = value;
@@ -150,9 +137,6 @@ function parseMultipartFormData(event: any): Promise<{ formData: FormData; fileD
     });
 
     busboy.on("file", (...args: any[]) => {
-      console.log("[DEBUG] Busboy file event - arguments count:", args.length);
-      console.log("[DEBUG] Busboy file event - arguments:", args.map((arg, i) => ({ index: i, type: typeof arg, value: typeof arg === 'object' ? JSON.stringify(arg) : arg })));
-      
       // Handle both Busboy API versions
       let fieldname: string;
       let file: any;
@@ -172,32 +156,28 @@ function parseMultipartFormData(event: any): Promise<{ formData: FormData; fileD
         // Older API: (fieldname, file, filename, encoding, mimetype)
         [fieldname, file, filename, encoding, mimetype] = args;
       } else {
-        console.error("[ERROR] Unexpected Busboy file event signature");
+        console.error("Unexpected Busboy file event signature");
         return;
       }
-
-      console.log("[DEBUG] Extracted - fieldname:", fieldname, "filename:", filename, "mimetype:", mimetype);
       
-      if (fieldname === "file") {
+      if (fieldname === "files") {
         const chunks: Buffer[] = [];
         file.on("data", (chunk: Buffer) => {
           chunks.push(chunk);
         });
         file.on("end", () => {
           const content = Buffer.concat(chunks);
-          console.log("[DEBUG] File complete - filename:", filename, "size:", content.length, "type:", mimetype);
-          fileData = {
+          filesData.push({
             name: filename,
             type: mimetype,
             content: content,
-          };
-          console.log("[DEBUG] FileData object:", JSON.stringify({ name: fileData?.name, type: fileData?.type, size: fileData?.content?.length }));
+          });
         });
       }
     });
 
     busboy.on("finish", () => {
-      resolve({ formData, fileData });
+      resolve({ formData, filesData });
     });
 
     busboy.on("error", (error: Error) => {
@@ -224,8 +204,6 @@ export async function handler(event: any) {
   }
 
   try {
-    console.log("[DEBUG] Request received. Content-Type:", event.headers["content-type"] || event.headers["Content-Type"]);
-    
     // Rate limiting
     const ip = event.headers["client-ip"] || event.headers["x-forwarded-for"] || "unknown";
     if (!checkRateLimit(ip)) {
@@ -238,23 +216,15 @@ export async function handler(event: any) {
     // Parse form data
     const contentType = event.headers["content-type"] || event.headers["Content-Type"] || "";
     let formData: FormData;
-    let fileData: FileData | null = null;
-
-    console.log("[DEBUG] Content-Type includes multipart:", contentType.includes("multipart/form-data"));
+    let filesData: FileData[] = [];
 
     if (contentType.includes("multipart/form-data")) {
       // Handle multipart form data with file using Busboy
-      console.log("[DEBUG] Parsing multipart form data...");
       const parsed = await parseMultipartFormData(event);
       formData = parsed.formData;
-      fileData = parsed.fileData;
-      console.log("[DEBUG] Parsed. File data present:", !!fileData);
-      if (fileData) {
-        console.log("[DEBUG] File info:", { name: fileData.name, type: fileData.type, size: fileData.content.length });
-      }
+      filesData = parsed.filesData;
     } else {
       // Handle JSON form data without file
-      console.log("[DEBUG] Parsing JSON form data...");
       const body = JSON.parse(event.body);
       formData = {
         fullName: body.fullName || "",
@@ -295,18 +265,17 @@ export async function handler(event: any) {
     formData.service = sanitizeInput(formData.service);
     formData.message = sanitizeInput(formData.message);
 
-    // Validate file if present
-    if (fileData) {
-      console.log("[DEBUG] Validating file...");
-      const validation = validateFile(fileData);
-      if (!validation.valid) {
-        console.log("[DEBUG] File validation failed:", validation.error);
-        return {
-          statusCode: 400,
-          body: JSON.stringify({ error: validation.error }),
-        };
+    // Validate files if present
+    if (filesData.length > 0) {
+      for (const file of filesData) {
+        const validation = validateFile(file);
+        if (!validation.valid) {
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ error: validation.error }),
+          };
+        }
       }
-      console.log("[DEBUG] File validation passed");
     }
 
     // Get current date and time
@@ -321,7 +290,6 @@ export async function handler(event: any) {
       minute: "2-digit",
     });
 
-    console.log("[DEBUG] Rendering admin email...");
     // Render admin email
     const adminEmailHtml = await render(
       AdminEmail({
@@ -332,12 +300,12 @@ export async function handler(event: any) {
         country: formData.country,
         service: formData.service,
         message: formData.message,
-        hasAttachment: !!fileData,
+        hasAttachment: filesData.length > 0,
+        attachmentCount: filesData.length,
         submissionDate,
         submissionTime,
       })
     );
-    console.log("[DEBUG] Admin email rendered");
 
     // Send admin email
     const adminEmailData = {
@@ -346,28 +314,20 @@ export async function handler(event: any) {
       replyTo: formData.email,
       subject: `New Quote Request – ${formData.fullName}`,
       html: adminEmailHtml,
-      attachments: fileData
-        ? [
-            {
-              filename: fileData.name,
-              content: fileData.content,
-            },
-          ]
-        : [],
+      attachments: filesData.map(file => ({
+        filename: file.name,
+        content: file.content,
+      })),
     };
 
-    console.log("[DEBUG] Sending admin email with", fileData ? "attachment" : "no attachment");
     await resend.emails.send(adminEmailData);
-    console.log("[DEBUG] Admin email sent");
 
-    console.log("[DEBUG] Rendering customer email...");
     // Render customer email
     const customerEmailHtml = await render(
       CustomerEmail({
         fullName: formData.fullName,
       })
     );
-    console.log("[DEBUG] Customer email rendered");
 
     // Send customer confirmation email
     const customerEmailData = {
@@ -377,17 +337,14 @@ export async function handler(event: any) {
       html: customerEmailHtml,
     };
 
-    console.log("[DEBUG] Sending customer email...");
     await resend.emails.send(customerEmailData);
-    console.log("[DEBUG] Customer email sent");
 
     return {
       statusCode: 200,
       body: JSON.stringify({ success: true, message: "Quote request submitted successfully" }),
     };
   } catch (error) {
-    console.error("[ERROR] Error processing quote request:", error);
-    console.error("[ERROR] Error stack:", error instanceof Error ? error.stack : "No stack trace");
+    console.error("Error processing quote request:", error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: "Internal server error" }),
