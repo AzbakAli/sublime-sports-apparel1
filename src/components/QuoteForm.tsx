@@ -122,21 +122,15 @@ export default function QuoteForm() {
     setLoading(true);
     setError(null);
 
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-
-    // Add files if present
-    files.forEach((file) => {
-      formData.append("files", file);
-    });
-
     try {
       const response = await fetch("/api/submit-quote", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ test: "data" }),
       });
 
-      // Check if response has content before parsing JSON
       const text = await response.text();
       let data;
       
@@ -152,9 +146,6 @@ export default function QuoteForm() {
       }
 
       setSubmitted(true);
-      form.reset();
-      // Revoke all preview URLs
-      previewUrls.forEach(url => URL.revokeObjectURL(url));
       setFiles([]);
       setPreviewUrls([]);
     } catch (err) {
