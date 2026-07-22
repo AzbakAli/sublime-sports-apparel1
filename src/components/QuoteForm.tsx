@@ -125,6 +125,11 @@ export default function QuoteForm() {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
+    // Add files if present
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
+
     try {
       const response = await fetch("/api/submit-quote", {
         method: "POST",
@@ -235,11 +240,7 @@ export default function QuoteForm() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-primary/70 mb-3">Phone</label>
-                    <input required type="tel" name="phone" className="w-full px-5 py-4 rounded-xl bg-light-gray border border-transparent focus:border-accent focus:bg-white focus:outline-none transition-all" placeholder="(713) 367-1479" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-primary/70 mb-3">Country</label>
-                    <input required type="text" name="country" defaultValue="Pakistan" className="w-full px-5 py-4 rounded-xl bg-light-gray border border-transparent focus:border-accent focus:bg-white focus:outline-none transition-all" placeholder="Pakistan" />
+                    <input type="tel" name="phone" className="w-full px-5 py-4 rounded-xl bg-light-gray border border-transparent focus:border-accent focus:bg-white focus:outline-none transition-all" placeholder="(713) 367-1479" />
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-primary/70 mb-3">Service Required</label>

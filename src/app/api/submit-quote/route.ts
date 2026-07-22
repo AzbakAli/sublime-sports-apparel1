@@ -10,10 +10,16 @@ interface FormData {
   fullName: string;
   company?: string;
   email: string;
-  phone: string;
-  country: string;
+  phone?: string;
+  country?: string;
   service: string;
   message: string;
+}
+
+interface FileData {
+  name: string;
+  type: string;
+  content: Buffer;
 }
 
 function sanitizeInput(input: string): string {
@@ -28,10 +34,54 @@ function validateEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
+function validateFile(file: FileData): { valid: boolean; error?: string } {
+  const allowedMimeTypes = [
+    'image/png',
+    'image/jpeg',
+    'image/jpg',
+    'image/pjpeg',
+    'application/pdf',
+    'application/postscript',
+    'application/illustrator',
+  ];
+  
+  const allowedExtensions = ['.png', '.jpg', '.jpeg', '.pdf', '.ai', '.eps'];
+  const maxSize = 10 * 1024 * 1024; // 10MB
+
+  if (file.content.length > maxSize) {
+    return { valid: false, error: 'File size exceeds 10MB limit' };
+  }
+
+  const filename = typeof file.name === 'string' 
+    ? file.name 
+    : typeof (file as any).filename === 'string'
+      ? (file as any).filename
+      : '';
+  
+  if (!filename) {
+    return { valid: false, error: 'Invalid file: missing filename' };
+  }
+
+  const fileExtension = filename.toLowerCase().substring(filename.lastIndexOf('.'));
+  
+  if (file.type && !allowedMimeTypes.includes(file.type)) {
+    if (!allowedExtensions.includes(fileExtension)) {
+      return { valid: false, error: 'Invalid file type. Allowed: PNG, JPG, JPEG, PDF, AI' };
+    }
+  }
+
+  if (!allowedExtensions.includes(fileExtension)) {
+    return { valid: false, error: 'Invalid file type. Allowed: PNG, JPG, JPEG, PDF, AI' };
+  }
+
+  return { valid: true };
+}
+
 export async function POST(req: NextRequest) {
   try {
     const contentType = req.headers.get('content-type') || '';
     let formData: FormData;
+    let filesData: FileData[] = [];
 
     if (contentType.includes('multipart/form-data')) {
       const body = await req.formData();
@@ -39,11 +89,24 @@ export async function POST(req: NextRequest) {
         fullName: body.get('fullName') as string || '',
         company: body.get('company') as string || undefined,
         email: body.get('email') as string || '',
-        phone: body.get('phone') as string || '',
-        country: body.get('country') as string || '',
+        phone: body.get('phone') as string || undefined,
+        country: body.get('country') as string || undefined,
         service: body.get('service') as string || '',
         message: body.get('message') as string || '',
       };
+
+      // Handle file uploads
+      for (const [key, value] of body.entries()) {
+        if (key === 'files' && value instanceof File) {
+          const arrayBuffer = await value.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+          filesData.push({
+            name: value.name,
+            type: value.type,
+            content: buffer,
+          });
+        }
+      }
     } else {
       const body = await req.json();
       formData = {
@@ -57,7 +120,7 @@ export async function POST(req: NextRequest) {
       };
     }
 
-    const requiredFields = ['fullName', 'email', 'phone', 'country', 'service', 'message'];
+    const requiredFields = ['fullName', 'email', 'service', 'message'];
     for (const field of requiredFields) {
       if (!formData[field as keyof FormData]) {
         return NextResponse.json(
@@ -77,10 +140,23 @@ export async function POST(req: NextRequest) {
     formData.fullName = sanitizeInput(formData.fullName);
     formData.company = formData.company ? sanitizeInput(formData.company) : undefined;
     formData.email = sanitizeInput(formData.email);
-    formData.phone = sanitizeInput(formData.phone);
-    formData.country = sanitizeInput(formData.country);
+    formData.phone = formData.phone ? sanitizeInput(formData.phone) : undefined;
+    formData.country = formData.country ? sanitizeInput(formData.country) : undefined;
     formData.service = sanitizeInput(formData.service);
     formData.message = sanitizeInput(formData.message);
+
+    // Validate files if present
+    if (filesData.length > 0) {
+      for (const file of filesData) {
+        const validation = validateFile(file);
+        if (!validation.valid) {
+          return NextResponse.json(
+            { error: validation.error },
+            { status: 400 }
+          );
+        }
+      }
+    }
 
     const now = new Date();
     const submissionDate = now.toLocaleDateString('en-US', {
@@ -102,7 +178,8 @@ export async function POST(req: NextRequest) {
         country: formData.country,
         service: formData.service,
         message: formData.message,
-        hasAttachment: false,
+        hasAttachment: filesData.length > 0,
+        attachmentCount: filesData.length,
         submissionDate,
         submissionTime,
       })
@@ -114,6 +191,10 @@ export async function POST(req: NextRequest) {
       replyTo: formData.email,
       subject: `New Quote Request – ${formData.fullName}`,
       html: adminEmailHtml,
+      attachments: filesData.map(file => ({
+        filename: file.name,
+        content: file.content,
+      })),
     };
 
     await resend.emails.send(adminEmailData);

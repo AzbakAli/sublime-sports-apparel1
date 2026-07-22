@@ -16,8 +16,8 @@ interface AdminEmailProps {
   fullName: string;
   company?: string;
   email: string;
-  phone: string;
-  country: string;
+  phone?: string;
+  country?: string;
   service: string;
   message: string;
   hasAttachment: boolean;
@@ -64,11 +64,12 @@ export default function AdminEmail({
             <Text style={label}>Email</Text>
             <Text style={value}>{email}</Text>
             
-            <Text style={label}>Phone</Text>
-            <Text style={value}>{phone}</Text>
-            
-            <Text style={label}>Country</Text>
-            <Text style={value}>{country}</Text>
+            {phone && (
+              <>
+                <Text style={label}>Phone</Text>
+                <Text style={value}>{phone}</Text>
+              </>
+            )}
             
             <Text style={label}>Service Required</Text>
             <Text style={value}>{service}</Text>
