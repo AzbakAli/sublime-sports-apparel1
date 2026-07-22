@@ -152,6 +152,8 @@ export default function QuoteForm() {
 
       setSubmitted(true);
       form.reset();
+      // Revoke all preview URLs
+      previewUrls.forEach(url => URL.revokeObjectURL(url));
       setFiles([]);
       setPreviewUrls([]);
     } catch (err) {
