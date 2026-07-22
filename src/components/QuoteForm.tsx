@@ -32,80 +32,48 @@ export default function QuoteForm() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [files, setFiles] = useState<File[]>([]);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Revoke object URLs on cleanup to avoid memory leaks
+  // Revoke object URL on cleanup to avoid memory leaks
   useEffect(() => {
     return () => {
-      previewUrls.forEach(url => URL.revokeObjectURL(url));
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
     };
-  }, [previewUrls]);
+  }, [previewUrl]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = Array.from(e.target.files || []);
-    if (selectedFiles.length === 0) return;
-
-    // Validate max 10 files
-    if (files.length + selectedFiles.length > 10) {
-      setError("Maximum 10 files allowed");
-      return;
-    }
-
-    const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif", "application/pdf", "application/postscript"];
-    const maxSize = 10 * 1024 * 1024; // 10MB per file
-    const maxTotalSize = 40 * 1024 * 1024; // 40MB total (Resend limit)
-
-    const validFiles: File[] = [];
-    const newPreviewUrls: string[] = [];
-
-    for (const file of selectedFiles) {
-      // Validate file type
-      if (!allowedTypes.includes(file.type)) {
-        setError(`Invalid file type: ${file.name}. Allowed: PNG, JPG, JPEG, WEBP, GIF, PDF, AI`);
+    const selectedFile = e.target.files?.[0] || null;
+    
+    if (selectedFile) {
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif", "application/pdf", "application/postscript"];
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      
+      if (!allowedTypes.includes(selectedFile.type)) {
+        setError("Invalid file type. Allowed: PNG, JPG, JPEG, WEBP, GIF, PDF, AI");
         return;
       }
-
-      // Validate file size
-      if (file.size > maxSize) {
-        setError(`File size exceeds 10MB limit: ${file.name}`);
+      
+      if (selectedFile.size > maxSize) {
+        setError("File size exceeds 10MB limit");
         return;
       }
-
-      validFiles.push(file);
-
-      // Create preview URL for images
-      if (file.type.startsWith("image/")) {
-        newPreviewUrls.push(URL.createObjectURL(file));
-      } else {
-        newPreviewUrls.push("");
-      }
+      
+      setFile(selectedFile);
+      setPreviewUrl(URL.createObjectURL(selectedFile));
+      setError(null);
     }
-
-    // Validate total size
-    const currentTotalSize = files.reduce((sum, f) => sum + f.size, 0);
-    const newFilesTotalSize = validFiles.reduce((sum, f) => sum + f.size, 0);
-    if (currentTotalSize + newFilesTotalSize > maxTotalSize) {
-      setError("Total file size exceeds 40MB limit");
-      return;
-    }
-
-    setFiles([...files, ...validFiles]);
-    setPreviewUrls([...previewUrls, ...newPreviewUrls]);
-    setError(null);
   };
 
-  const handleRemoveFile = (index: number) => {
-    const newFiles = files.filter((_, i) => i !== index);
-    const newPreviewUrls = previewUrls.filter((_, i) => i !== index);
-    
-    // Revoke the URL being removed
-    URL.revokeObjectURL(previewUrls[index]);
-    
-    setFiles(newFiles);
-    setPreviewUrls(newPreviewUrls);
-    
+  const handleRemoveFile = () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    setFile(null);
+    setPreviewUrl(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -125,13 +93,13 @@ export default function QuoteForm() {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    // Add files if present
-    files.forEach((file) => {
-      formData.append("files", file);
-    });
+    // Add file if present
+    if (file) {
+      formData.append("file", file);
+    }
 
     try {
-      const response = await fetch("/api/submit-quote", {
+      const response = await fetch("/.netlify/functions/submit-quote", {
         method: "POST",
         body: formData,
       });
@@ -152,10 +120,11 @@ export default function QuoteForm() {
 
       setSubmitted(true);
       form.reset();
-      // Revoke all preview URLs
-      previewUrls.forEach(url => URL.revokeObjectURL(url));
-      setFiles([]);
-      setPreviewUrls([]);
+      setFile(null);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      setPreviewUrl(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred. Please try again.");
     } finally {
@@ -261,15 +230,14 @@ export default function QuoteForm() {
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-primary/70 mb-3">Upload Design/File (Optional)</label>
-                    {files.length === 0 ? (
+                    {!file ? (
                       <div className="w-full px-5 py-8 rounded-xl bg-light-gray border border-dashed border-primary/20 flex flex-col items-center justify-center cursor-pointer hover:border-accent transition-colors" onClick={() => fileInputRef.current?.click()}>
                         <UploadCloud className="w-10 h-10 text-primary/30 mb-3" />
                         <span className="text-sm text-primary/60 font-medium">Click to upload or drag and drop</span>
-                        <span className="text-xs text-primary/30 mt-2">PNG, JPG, JPEG, WEBP, GIF, PDF, AI up to 10MB each (max 10 files, 40MB total)</span>
+                        <span className="text-xs text-primary/30 mt-2">PNG, JPG, JPEG, WEBP, GIF, PDF, AI up to 10MB</span>
                         <input
                           ref={fileInputRef}
                           type="file"
-                          multiple
                           className="hidden"
                           accept=".png,.jpg,.jpeg,.webp,.gif,.pdf,.ai"
                           onChange={handleFileChange}
@@ -277,43 +245,31 @@ export default function QuoteForm() {
                       </div>
                     ) : (
                       <div className="w-full p-4 rounded-xl bg-light-gray border border-primary/20">
-                        <div className="space-y-3">
-                          {files.map((file, index) => (
-                            <div key={index} className="flex items-start gap-4">
-                              {previewUrls[index] ? (
-                                <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-white">
-                                  <img src={previewUrls[index]} alt={file.name} className="w-full h-full object-cover" />
-                                </div>
-                              ) : (
-                                <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                  <UploadCloud className="w-6 h-6 text-primary/40" />
-                                </div>
-                              )}
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-primary truncate">{file.name}</p>
-                                <p className="text-xs text-primary/50 mt-1">{formatFileSize(file.size)}</p>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveFile(index)}
-                                className="p-2 rounded-lg hover:bg-red-50 text-primary/50 hover:text-red-500 transition-colors"
-                              >
-                                <X className="w-4 h-4" />
-                              </button>
+                        <div className="flex items-start gap-4">
+                          {previewUrl ? (
+                            <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-white">
+                              <img src={previewUrl} alt={file.name} className="w-full h-full object-cover" />
                             </div>
-                          ))}
+                          ) : (
+                            <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                              <UploadCloud className="w-6 h-6 text-primary/40" />
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-primary truncate">{file.name}</p>
+                            <p className="text-xs text-primary/50 mt-1">{formatFileSize(file.size)}</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={handleRemoveFile}
+                            className="p-2 rounded-lg hover:bg-red-50 text-primary/50 hover:text-red-500 transition-colors"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => fileInputRef.current?.click()}
-                          className="mt-4 text-sm text-accent font-medium hover:text-accent/80 transition-colors"
-                        >
-                          + Add more files
-                        </button>
                         <input
                           ref={fileInputRef}
                           type="file"
-                          multiple
                           className="hidden"
                           accept=".png,.jpg,.jpeg,.webp,.gif,.pdf,.ai"
                           onChange={handleFileChange}
