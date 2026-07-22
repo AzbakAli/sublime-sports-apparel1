@@ -79,11 +79,15 @@ function validateFile(file: FileData): { valid: boolean; error?: string } {
 
 export async function POST(req: NextRequest) {
   try {
+    console.log('=== API Route Called ===');
     const contentType = req.headers.get('content-type') || '';
+    console.log('Content-Type:', contentType);
+    
     let formData: FormData;
     let filesData: FileData[] = [];
 
     if (contentType.includes('multipart/form-data')) {
+      console.log('Parsing multipart form data...');
       const body = await req.formData();
       formData = {
         fullName: body.get('fullName') as string || '',
@@ -94,10 +98,12 @@ export async function POST(req: NextRequest) {
         service: body.get('service') as string || '',
         message: body.get('message') as string || '',
       };
+      console.log('Form data parsed:', { fullName: formData.fullName, email: formData.email });
 
       // Handle file uploads
       for (const [key, value] of body.entries()) {
         if (key === 'files' && value instanceof File) {
+          console.log('Processing file:', value.name, value.type, value.size);
           const arrayBuffer = await value.arrayBuffer();
           const buffer = Buffer.from(arrayBuffer);
           filesData.push({
@@ -107,7 +113,9 @@ export async function POST(req: NextRequest) {
           });
         }
       }
+      console.log('Files processed:', filesData.length);
     } else {
+      console.log('Parsing JSON form data...');
       const body = await req.json();
       formData = {
         fullName: body.fullName || '',
@@ -123,6 +131,7 @@ export async function POST(req: NextRequest) {
     const requiredFields = ['fullName', 'email', 'service', 'message'];
     for (const field of requiredFields) {
       if (!formData[field as keyof FormData]) {
+        console.log('Missing required field:', field);
         return NextResponse.json(
           { error: `${field} is required` },
           { status: 400 }
@@ -131,6 +140,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (!validateEmail(formData.email)) {
+      console.log('Invalid email:', formData.email);
       return NextResponse.json(
         { error: 'Invalid email address' },
         { status: 400 }
@@ -147,9 +157,11 @@ export async function POST(req: NextRequest) {
 
     // Validate files if present
     if (filesData.length > 0) {
+      console.log('Validating files...');
       for (const file of filesData) {
         const validation = validateFile(file);
         if (!validation.valid) {
+          console.log('File validation failed:', validation.error);
           return NextResponse.json(
             { error: validation.error },
             { status: 400 }
@@ -169,6 +181,7 @@ export async function POST(req: NextRequest) {
       minute: '2-digit',
     });
 
+    console.log('Rendering admin email...');
     const adminEmailHtml = await render(
       AdminEmail({
         fullName: formData.fullName,
@@ -184,6 +197,7 @@ export async function POST(req: NextRequest) {
         submissionTime,
       })
     );
+    console.log('Admin email rendered');
 
     const adminEmailData = {
       from: 'Sublime Sports Apparel <noreply@sublimesportsapparel.net>',
@@ -197,13 +211,17 @@ export async function POST(req: NextRequest) {
       })),
     };
 
+    console.log('Sending admin email...');
     await resend.emails.send(adminEmailData);
+    console.log('Admin email sent');
 
+    console.log('Rendering customer email...');
     const customerEmailHtml = await render(
       CustomerEmail({
         fullName: formData.fullName,
       })
     );
+    console.log('Customer email rendered');
 
     const customerEmailData = {
       from: 'Sublime Sports Apparel <noreply@sublimesportsapparel.net>',
@@ -212,14 +230,18 @@ export async function POST(req: NextRequest) {
       html: customerEmailHtml,
     };
 
+    console.log('Sending customer email...');
     await resend.emails.send(customerEmailData);
+    console.log('Customer email sent');
 
+    console.log('Returning success response');
     return NextResponse.json(
       { success: true, message: 'Quote request submitted successfully' },
       { status: 200 }
     );
   } catch (error) {
     console.error('Error processing quote request:', error);
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
     return NextResponse.json(
       { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown' },
       { status: 500 }
