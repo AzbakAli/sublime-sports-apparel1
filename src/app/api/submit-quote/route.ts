@@ -46,7 +46,8 @@ function validateFile(file: FileData): { valid: boolean; error?: string } {
   ];
   
   const allowedExtensions = ['.png', '.jpg', '.jpeg', '.pdf', '.ai', '.eps'];
-  const maxSize = 10 * 1024 * 1024; // 10MB
+  const maxSize = 10 * 1024 * 1024; // 10MB per file
+  const maxFiles = 10;
 
   if (file.content.length > maxSize) {
     return { valid: false, error: 'File size exceeds 10MB limit' };
@@ -174,6 +175,16 @@ export async function POST(req: NextRequest) {
     // Validate files if present
     if (filesData.length > 0) {
       console.log('Validating', filesData.length, 'files');
+      
+      // Check file count limit
+      if (filesData.length > 10) {
+        console.log('Too many files:', filesData.length);
+        return NextResponse.json(
+          { error: 'Maximum 10 files allowed' },
+          { status: 400 }
+        );
+      }
+      
       for (const file of filesData) {
         const validation = validateFile(file);
         if (!validation.valid) {
