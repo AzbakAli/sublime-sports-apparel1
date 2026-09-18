@@ -104,7 +104,7 @@ export default function QuoteForm() {
     }
 
     try {
-      const response = await fetch("/.netlify/functions/submit-quote", {
+      const response = await fetch("/api/submit-quote", {
         method: "POST",
         body: formData,
       });
