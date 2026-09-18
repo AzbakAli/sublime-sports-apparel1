@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle, UploadCloud, Send, Mail, Phone, MapPin, Clock, AlertCircle, Loader2, X, Building } from "lucide-react";
+import { CheckCircle, UploadCloud, Send, Mail, Phone, Clock, AlertCircle, Loader2, X, Building } from "lucide-react";
 
 const contactInfo = [
   {
@@ -15,11 +15,6 @@ const contactInfo = [
     label: "Phone",
     value: "(713) 367-1479",
     href: "tel:+17133671479",
-  },
-  {
-    icon: MapPin,
-    label: "Location",
-    value: "Industrial Area, Karachi, Sindh, Pakistan",
   },
   {
     icon: Building,
