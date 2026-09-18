@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   description: "Premium sportswear manufacturer specializing in custom sublimation printing, team uniforms, and embroidered patches for brands, clubs, and businesses worldwide.",
   icons: {
     icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
   openGraph: {
     title: "Sublime Sports Apparel | Premium Sportswear Manufacturing",
