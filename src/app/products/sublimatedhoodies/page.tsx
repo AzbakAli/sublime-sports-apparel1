@@ -5,7 +5,7 @@ import DesignCard from "@/components/DesignCard";
 import ProductNavigation from "@/components/ProductNavigation";
 import { motion } from "framer-motion";
 
-export default function SublimatedHoodiesDesigns() {
+export default function HoodiesDesigns() {
   const designs = [
     { index: 0, imageSrc: "/images/sublimatedhoodies (1).jfif" },
     { index: 1, imageSrc: "/images/sublimatedhoodies (2).jfif" },
@@ -37,6 +37,12 @@ export default function SublimatedHoodiesDesigns() {
     { index: 27, imageSrc: "/images/sublimatedhoodies (28).jfif" },
     { index: 28, imageSrc: "/images/sublimatedhoodies (29).jfif" },
     { index: 29, imageSrc: "/images/sublimatedhoodies (30).jfif" },
+    { index: 30, imageSrc: "/images/hoodies (1).jpeg" },
+    { index: 31, imageSrc: "/images/hoodies (2).jpeg" },
+    { index: 32, imageSrc: "/images/hoodies (3).jpeg" },
+    { index: 33, imageSrc: "/images/hoodies (4).jpeg" },
+    { index: 34, imageSrc: "/images/hoodies (5).jpeg" },
+    { index: 35, imageSrc: "/images/hoodies (6).jpeg" },
   ];
 
   return (
@@ -52,10 +58,10 @@ export default function SublimatedHoodiesDesigns() {
             className="text-center mb-16"
           >
             <h1 className="font-heading text-5xl md:text-6xl font-extrabold text-primary mb-4">
-              <span className="text-gradient-gold">Sublimated Hoodies</span> Designs
+              <span className="text-gradient-gold">Hoodies</span> Designs
             </h1>
             <p className="text-primary/70 text-lg max-w-2xl mx-auto">
-              Explore our collection of 30 premium sublimated hoodie designs
+              Explore our collection of 36 premium hoodie designs
             </p>
           </motion.div>
 

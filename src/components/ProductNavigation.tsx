@@ -9,9 +9,12 @@ const productTypes = [
   { name: "Football", href: "/products/football" },
   { name: "Ice Hockey", href: "/products/icehockey" },
   { name: "Athletic Apparel", href: "/products/athleticapparel" },
-  { name: "Sublimated Hoodies", href: "/products/sublimatedhoodies" },
+  { name: "Hoodies", href: "/products/sublimatedhoodies" },
   { name: "T-Shirts & Polo", href: "/products/sublimatedtshirtpolo" },
   { name: "Wrestling Singlet", href: "/products/wrestlingsinglet" },
+  { name: "Jackets", href: "/products/jackets" },
+  { name: "Sweatshirts", href: "/products/sweatshirts" },
+  { name: "Workwear", href: "/products/workwear" },
 ];
 
 export default function ProductNavigation() {

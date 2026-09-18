@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle, UploadCloud, Send, Mail, Phone, MapPin, Clock, AlertCircle, Loader2, X } from "lucide-react";
+import { CheckCircle, UploadCloud, Send, Mail, Phone, MapPin, Clock, AlertCircle, Loader2, X, Building } from "lucide-react";
 
 const contactInfo = [
   {
@@ -20,6 +20,11 @@ const contactInfo = [
     icon: MapPin,
     label: "Location",
     value: "Industrial Area, Karachi, Sindh, Pakistan",
+  },
+  {
+    icon: Building,
+    label: "Manufacturing Facility",
+    value: "F.B Industrial area block 22 Gulberg town, Karachi, 75950 (Pakistan)",
   },
   {
     icon: Clock,
